@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -39,6 +41,7 @@
     <Folder Include="Models\FieldsRequest\AdminSide\" />
     <Folder Include="Models\FieldsRequest\UserSide\" />
     <Folder Include="DataProtection\" />
+    <Folder Include="Keys\" />
   </ItemGroup>
 
 </Project>

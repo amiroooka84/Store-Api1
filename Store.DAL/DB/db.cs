@@ -27,7 +27,7 @@ namespace StoreApi.DAL.DB
             //optionsBuilder.UseSqlServer("Server=.; Initial Catalog=stockss; User ID=stockss; Password=stockss.123; MultipleActiveResultSets=true");
             base.OnConfiguring(optionsBuilder);
         }
-        
+
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
         public DbSet<Category> Categories { get; set; }

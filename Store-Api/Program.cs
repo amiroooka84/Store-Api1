@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,10 @@ internal class Program
         //شناختن دیتا بیس به پروژه
         builder.Services.AddDbContext<db>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("con")));
 
-
+        //builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("con"),
+        //    optionsBuilder =>
+        //    optionsBuilder.MigrationsAssembly("dal")
+        //));
 
         var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         builder.Services.AddCors(options =>
@@ -76,14 +80,14 @@ internal class Program
         .AddDefaultTokenProviders()
         .AddEntityFrameworkStores<db>();
 
+        var serviceCollection = new ServiceCollection();
 
         string sKeysPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Keys");
-        builder.Services.AddDataProtection().
-            DisableAutomaticKeyGeneration().
-            SetDefaultKeyLifetime(new TimeSpan(30, 0, 0, 0));
-    //        .SetApplicationName("StoreApi") // Application A sets this same name
-    //.PersistKeysToFileSystem(new DirectoryInfo("/Keys"))
-    //.DisableAutomaticKeyGeneration();
+        serviceCollection.AddDataProtection()
+            .SetDefaultKeyLifetime(new TimeSpan(30, 0, 0, 0))
+;
+
+      
 
 
 

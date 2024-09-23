@@ -13,6 +13,7 @@ using StoreApi.Models.FieldsRequest.AccountField;
 using Store_Api.Models.Classes.Account;
 using StoreApi.Models;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace StoreApi.Controllers
@@ -30,7 +31,15 @@ namespace StoreApi.Controllers
         {
             _userManager = userManager;
             _SignInManager = SignInManager;
-            _protector = provider.CreateProtector("AccountController", new string[] { "Account" });
+            //_protector = provider.CreateProtector("AccountController", new string[] { "Account" });
+
+            var serviceCollection = new ServiceCollection();
+
+            string sKeysPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Keys");
+            serviceCollection.AddDataProtection();
+            var services = serviceCollection.BuildServiceProvider();
+            var dataProtectionProvider = services.GetService<IDataProtectionProvider>();
+            _protector = dataProtectionProvider.CreateProtector("MyFirstKey");
         }
 
 
@@ -68,13 +77,7 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "PhoneNumber")]
         public IActionResult PhoneNumber(PhoneNumberFieldRequest phoneNumberFieldRequest)
         {
-            var serviceCollection = new ServiceCollection();
 
-            string sKeysPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Keys");
-            serviceCollection.AddDataProtection();
-            var services = serviceCollection.BuildServiceProvider();
-            var dataProtectionProvider = services.GetService<IDataProtectionProvider>();
-            var dataProtector = dataProtectionProvider.CreateProtector("MyFirstKey");
 
 
             if (phoneNumberFieldRequest.PhoneNumber?.Length != 11 || !phoneNumberFieldRequest.PhoneNumber.StartsWith("09"))
@@ -87,8 +90,8 @@ namespace StoreApi.Controllers
             sms.SendConfirmCode(Code, phoneNumberFieldRequest.PhoneNumber);
             DateTime expireTime = DateTime.Now.AddMinutes(5);
             string Serialize = JsonConvert.SerializeObject(new ConfirmCode() {PhoneNumber = phoneNumberFieldRequest.PhoneNumber , Code = Code, ExpireTime = expireTime });
-            //var RetCode = _protector.Protect(Serialize);
-            var RetCode = dataProtector.Protect(Serialize);
+            var RetCode = _protector.Protect(Serialize);
+            //var RetCode = dataProtector.Protect(Serialize);
             return Ok(RetCode);
         }
 
@@ -96,8 +99,17 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "VerifiCode")]
         public async Task<bool> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
-            var Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
-            var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
+            var Encrypt = "";
+            //try
+            //{
+                Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
+            //}
+            //catch (Exception)
+            //{
+            //    return false;
+            //}
+
+                var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
             if (ConfirmCode.PhoneNumber == VerifiFieldRequest.PhoneNumber && ConfirmCode.Code== VerifiFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
             {
 

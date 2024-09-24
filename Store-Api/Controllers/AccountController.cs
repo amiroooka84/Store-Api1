@@ -73,7 +73,7 @@ namespace StoreApi.Controllers
         //    return null;
         //}
 
-        
+
         [HttpPost(Name = "PhoneNumber")]
         public IActionResult PhoneNumber(PhoneNumberFieldRequest phoneNumberFieldRequest)
         {
@@ -90,14 +90,14 @@ namespace StoreApi.Controllers
             sms.SendConfirmCode(Code, phoneNumberFieldRequest.PhoneNumber);
             DateTime expireTime = DateTime.Now.AddMinutes(5);
             string Serialize = JsonConvert.SerializeObject(new ConfirmCode() {PhoneNumber = phoneNumberFieldRequest.PhoneNumber , Code = Code, ExpireTime = expireTime });
-            var RetCode = _protector.Protect(Serialize);
+            var hashCode = _protector.Protect(Serialize);
             //var RetCode = dataProtector.Protect(Serialize);
-            return Ok(RetCode);
+            return Ok(new { hashCode, Code });
         }
 
 
         [HttpPost(Name = "VerifiCode")]
-        public async Task<bool> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
+        public async Task<IActionResult> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
             var Encrypt = "";
             //try
@@ -115,12 +115,12 @@ namespace StoreApi.Controllers
 
                 if (VerifiFieldRequest.PhoneNumber?.Length != 11 || !VerifiFieldRequest.PhoneNumber.StartsWith("09"))
                 {
-                    return false;
+                    return Ok(false) ;
                 }
                 bl_Account bl_Account = new bl_Account();
                 if (bl_Account.ExsitUser(VerifiFieldRequest.PhoneNumber))
                 {
-                    return true;
+                    return Ok(true) ;
                 }
                 else
                 {
@@ -133,15 +133,20 @@ namespace StoreApi.Controllers
 
                     if (res.Succeeded)
                     {
-                        return true;
+                        JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage();
+                        var Result = jWTAuthorizeManage.Authenticate(VerifiFieldRequest.PhoneNumber);
+                        if (Result == null)
+                            return Ok(false);
+                        else
+                            return Ok(Result); 
                     }
 
-                    return false;
+                    return Ok(false);
                 }
             }
             else
             {
-                return false;
+                return Ok(false);
             }
         }
 

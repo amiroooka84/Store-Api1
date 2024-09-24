@@ -9,7 +9,7 @@ namespace StoreApi
 
     public class JWTAuthorizeManage
     {
-        public JWT_Fields Authenticate(string? PhoneNumber, string? Password )
+        public JWT_Fields Authenticate(string? PhoneNumber)
         {
 
 

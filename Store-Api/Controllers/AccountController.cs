@@ -120,7 +120,12 @@ namespace StoreApi.Controllers
                 bl_Account bl_Account = new bl_Account();
                 if (bl_Account.ExsitUser(VerifiFieldRequest.PhoneNumber))
                 {
-                    return Ok(true) ;
+                    JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage();
+                    var Result = jWTAuthorizeManage.Authenticate(VerifiFieldRequest.PhoneNumber);
+                    if (Result == null)
+                        return Ok(false);
+                    else
+                        return Ok(Result);
                 }
                 else
                 {

@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using StoreApi.Entity._User;
 using StoreApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,7 +11,11 @@ namespace StoreApi
 
     public class JWTAuthorizeManage
     {
-        public JWT_Fields Authenticate(string? PhoneNumber)
+        private readonly UserManager<User> _userManager;
+        public JWTAuthorizeManage(UserManager<User> userManager) {
+            _userManager = userManager;
+        }
+        public async Task<JWT_Fields> AuthenticateAsync(string? PhoneNumber)
         {
 
 
@@ -19,12 +25,19 @@ namespace StoreApi
 
             var Tokenkey = Encoding.ASCII.GetBytes(Constansts.JWT_SECURITY_KEY_FOR_TOKEN);
 
+            string RoleUser = "";
+            if (await _userManager.IsInRoleAsync(await _userManager.FindByNameAsync(PhoneNumber) , "AdminOnly"))
+            {
+                RoleUser = "AdminOnly";
+            }
+
             var SecurityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new System.Security.Claims.ClaimsIdentity(new List<Claim>
                 {
                     new Claim("PhoneNumber" , PhoneNumber),
-                    new Claim(ClaimTypes.PrimaryGroupSid , "User Group 01")
+                    new Claim(ClaimTypes.Role , RoleUser),
+
                 }),
                 Expires = TokenExpireTimeStamp,
 
@@ -41,7 +54,6 @@ namespace StoreApi
                 Expire_Time = TokenExpireTimeStamp
             };
         }
-
 
     }
 }

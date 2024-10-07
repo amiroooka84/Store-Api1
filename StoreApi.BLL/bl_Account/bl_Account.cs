@@ -1,4 +1,5 @@
 ﻿using StoreApi.DAL.dl_Account;
+using StoreApi.Entity._User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,13 @@ namespace StoreApi.BLL.Account
 {
     public class bl_Account
     {
+        dl_Account dl_Account = new dl_Account();
+        public bool EditProfile(User user)
+        {
+            dl_Account dl_Account = new dl_Account();
+            return dl_Account.EditProfile(user);
+        }
+
         public bool ExsitUser(string? phoneNumber)
         {
             dl_Account dl_Account = new dl_Account();

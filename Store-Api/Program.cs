@@ -67,6 +67,13 @@ internal class Program
             };
         });
 
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly",
+            policy => policy.RequireClaim("AdminNumber")
+            );
+        });
+
         builder.Services.AddIdentity<User, IdentityRole>(option =>
         {
             option.Password.RequireDigit = false;

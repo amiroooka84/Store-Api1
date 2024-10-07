@@ -14,13 +14,21 @@ using Store_Api.Models.Classes.Account;
 using StoreApi.Models;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using Store_Api.Models.FieldsRequest.AccountField;
+using StoreApi.DAL.dl_Account;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authentication;
 
 
 namespace StoreApi.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    [AllowAnonymous]
+
+
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -100,14 +108,8 @@ namespace StoreApi.Controllers
         public async Task<IActionResult> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
             var Encrypt = "";
-            //try
-            //{
+
                 Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
-            //}
-            //catch (Exception)
-            //{
-            //    return false;
-            //}
 
                 var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
             if (ConfirmCode.PhoneNumber == VerifiFieldRequest.PhoneNumber && ConfirmCode.Code== VerifiFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
@@ -120,8 +122,8 @@ namespace StoreApi.Controllers
                 bl_Account bl_Account = new bl_Account();
                 if (bl_Account.ExsitUser(VerifiFieldRequest.PhoneNumber))
                 {
-                    JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage();
-                    var Result = jWTAuthorizeManage.Authenticate(VerifiFieldRequest.PhoneNumber);
+                    JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);
+                    var Result = jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
                     if (Result == null)
                         return Ok(false);
                     else
@@ -138,8 +140,8 @@ namespace StoreApi.Controllers
 
                     if (res.Succeeded)
                     {
-                        JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage();
-                        var Result = jWTAuthorizeManage.Authenticate(VerifiFieldRequest.PhoneNumber);
+                        JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);
+                        var Result = jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
                         if (Result == null)
                             return Ok(false);
                         else
@@ -154,6 +156,34 @@ namespace StoreApi.Controllers
                 return Ok(false);
             }
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost(Name = "EditProfile")]
+        public async Task<IActionResult> EditProfile(EditProfileFieldRequest EditProfileFieldRequest )
+        {
+            
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken("eyJhbGciOiJBMTkyQ0JDLUhTMzg0IiwidHlwIjoiSldUIn0.eyJQaG9uZU51bWJlciI6IjA5MTg1NTI4ODY0Iiwicm9sZSI6IkFkbWluT25seSIsInByaW1hcnlncm91cHNpZCI6IkFkbWluT25seWkiLCJuYmYiOjE3MjgzMjU2MjQsImV4cCI6MTcyOTE4OTYyNCwiaWF0IjoxNzI4MzI1NjI0fQ.nsZQkLxTIGQtabqVNYqNmRiOk7Nki2NLE78Buv1HUEu2T1cWV2LM9KXq4XL2Vfh_");
+            bl_Account bl_Account = new bl_Account();
+            User user = new User()
+            {
+                FirstName = EditProfileFieldRequest.FirstName,
+                LastName = EditProfileFieldRequest.LastName,
+                PhoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()
+            };
+            bool res = bl_Account.EditProfile(user);
+
+            return Ok(res);
+            
+        }
+
+
+
+
+
+
+
+
+
 
 
         //[HttpPost(Name = "ForgotPassword")]

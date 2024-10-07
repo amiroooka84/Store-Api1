@@ -1,4 +1,5 @@
 ﻿using StoreApi.DAL.DB;
+using StoreApi.Entity._User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,22 @@ namespace StoreApi.DAL.dl_Account
 {
     public class dl_Account
     {
+
+        public bool EditProfile(User user)
+        {
+            db db = new db();
+            foreach (var item in db.Users)
+            {
+                if (user.PhoneNumber == item.PhoneNumber)
+                {
+                    item.FirstName = user.FirstName;
+                    item.LastName = user.LastName;
+                }
+            }
+            db.SaveChanges();
+            return true;
+        }
+
         public bool ExsitUser(string phoneNumber)
         {
             db db = new db();

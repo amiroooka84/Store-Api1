@@ -159,21 +159,19 @@ namespace StoreApi.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost(Name = "EditProfile")]
-        public async Task<IActionResult> EditProfile(EditProfileFieldRequest EditProfileFieldRequest )
+        public IActionResult EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
         {
-            
-            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken("eyJhbGciOiJBMTkyQ0JDLUhTMzg0IiwidHlwIjoiSldUIn0.eyJQaG9uZU51bWJlciI6IjA5MTg1NTI4ODY0Iiwicm9sZSI6IkFkbWluT25seSIsInByaW1hcnlncm91cHNpZCI6IkFkbWluT25seWkiLCJuYmYiOjE3MjgzMjU2MjQsImV4cCI6MTcyOTE4OTYyNCwiaWF0IjoxNzI4MzI1NjI0fQ.nsZQkLxTIGQtabqVNYqNmRiOk7Nki2NLE78Buv1HUEu2T1cWV2LM9KXq4XL2Vfh_");
             bl_Account bl_Account = new bl_Account();
             User user = new User()
             {
                 FirstName = EditProfileFieldRequest.FirstName,
                 LastName = EditProfileFieldRequest.LastName,
+                Address = EditProfileFieldRequest.Address,
+                PostCode = EditProfileFieldRequest.PostCode,
                 PhoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()
             };
             bool res = bl_Account.EditProfile(user);
-
-            return Ok(res);
-            
+            return Ok(res); 
         }
 
 

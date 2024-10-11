@@ -20,6 +20,8 @@ namespace StoreApi.DAL.dl_Account
                 {
                     item.FirstName = user.FirstName;
                     item.LastName = user.LastName;
+                    item.Address = user.Address;
+                    item.PostCode = user.PostCode;
                 }
             }
             db.SaveChanges();

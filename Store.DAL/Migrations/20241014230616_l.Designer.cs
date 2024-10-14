@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreApi.DAL.DB;
 
@@ -11,9 +12,10 @@ using StoreApi.DAL.DB;
 namespace StoreApi.DAL.Migrations
 {
     [DbContext(typeof(db))]
-    partial class dbModelSnapshot : ModelSnapshot
+    [Migration("20241014230616_l")]
+    partial class l
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,10 +191,7 @@ namespace StoreApi.DAL.Migrations
             modelBuilder.Entity("StoreApi.Entity._Category.Category", b =>
                 {
                     b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -332,7 +331,7 @@ namespace StoreApi.DAL.Migrations
                     b.Property<string>("Brand")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("Categoryid")
                         .HasColumnType("int");
 
                     b.Property<int>("Code")
@@ -363,6 +362,8 @@ namespace StoreApi.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("Categoryid");
 
                     b.ToTable("Products");
                 });
@@ -577,6 +578,15 @@ namespace StoreApi.DAL.Migrations
                         .HasForeignKey("Orderid");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("StoreApi.Entity._Product.Product", b =>
+                {
+                    b.HasOne("StoreApi.Entity._Category.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("Categoryid");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("StoreApi.Entity._Product.ProductColors", b =>

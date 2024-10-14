@@ -4,12 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Store_Api</RootNamespace>
+    <RootNamespace>StoreApi</RootNamespace>
     <UserSecretsId>b6f368b1-a56b-4b78-ab75-2a6b134b98e1</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="6.0.9" />
@@ -37,11 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DataProtection\" />
     <Folder Include="Models\Classes\AdminSide\" />
     <Folder Include="Models\Classes\UserSide\" />
-    <Folder Include="Models\FieldsRequest\AdminSide\" />
     <Folder Include="Models\FieldsRequest\UserSide\" />
-    <Folder Include="DataProtection\" />
     <Folder Include="Keys\" />
   </ItemGroup>
 

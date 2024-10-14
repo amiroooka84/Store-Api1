@@ -10,6 +10,7 @@ using StoreApi.Entity._Product;
 using StoreApi.Entity._Category;
 using StoreApi.Entity._Order;
 using StoreApi.Entity._Basket;
+using StoreApi.Entity._Image;
 
 namespace StoreApi.DAL.DB
 {
@@ -34,5 +35,7 @@ namespace StoreApi.DAL.DB
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ProductOrder> ProductOrders { get; set; }
+        public DbSet<ImagePath> ImagesPath { get; set; }
+
     }
 }

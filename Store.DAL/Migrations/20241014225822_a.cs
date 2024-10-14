@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StoreApi.DAL.Migrations
 {
-    public partial class store : Migration
+    public partial class a : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,6 +31,8 @@ namespace StoreApi.DAL.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -214,21 +216,22 @@ namespace StoreApi.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Slack = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     Number = table.Column<int>(type: "int", nullable: false),
-                    Discription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Specifications = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    specs = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _Categoryid = table.Column<int>(type: "int", nullable: true)
+                    Categoryid = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Products_Categories__Categoryid",
-                        column: x => x._Categoryid,
+                        name: "FK_Products_Categories_Categoryid",
+                        column: x => x.Categoryid,
                         principalTable: "Categories",
                         principalColumn: "id");
                 });
@@ -255,6 +258,25 @@ namespace StoreApi.DAL.Migrations
                         name: "FK_ProductOrders_Orders_Orderid",
                         column: x => x.Orderid,
                         principalTable: "Orders",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImagesPath",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Productid = table.Column<int>(type: "int", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImagesPath", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ImagesPath_Products_Productid",
+                        column: x => x.Productid,
+                        principalTable: "Products",
                         principalColumn: "id");
                 });
 
@@ -369,6 +391,11 @@ namespace StoreApi.DAL.Migrations
                 column: "_Categoryid");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ImagesPath_Productid",
+                table: "ImagesPath",
+                column: "Productid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -384,9 +411,9 @@ namespace StoreApi.DAL.Migrations
                 column: "Orderid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products__Categoryid",
+                name: "IX_Products_Categoryid",
                 table: "Products",
-                column: "_Categoryid");
+                column: "Categoryid");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -408,6 +435,9 @@ namespace StoreApi.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Baskets");
+
+            migrationBuilder.DropTable(
+                name: "ImagesPath");
 
             migrationBuilder.DropTable(
                 name: "ProductOrders");

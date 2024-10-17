@@ -200,12 +200,10 @@ namespace StoreApi.DAL.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("_Categoryid")
+                    b.Property<int>("_Category")
                         .HasColumnType("int");
 
                     b.HasKey("id");
-
-                    b.HasIndex("_Categoryid");
 
                     b.ToTable("Categories");
                 });
@@ -541,15 +539,6 @@ namespace StoreApi.DAL.Migrations
                     b.Navigation("ProductColors");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Category.Category", b =>
-                {
-                    b.HasOne("StoreApi.Entity._Category.Category", "_Category")
-                        .WithMany()
-                        .HasForeignKey("_Categoryid");
-
-                    b.Navigation("_Category");
                 });
 
             modelBuilder.Entity("StoreApi.Entity._Image.ImagePath", b =>

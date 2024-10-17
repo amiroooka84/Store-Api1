@@ -28,7 +28,7 @@ namespace StoreApi.Controllers
                 Colors = productFieldRequest.Colors,
                 ImagePath = productFieldRequest.ImagePath,
                 specs = productFieldRequest.specs,
-                CategoryId = productFieldRequest.Category.id,
+                CategoryId = productFieldRequest.CategoryId,
 
             };
             bool res = bl_ManageProduct.AddProduct(product , productFieldRequest.ImagesPath);

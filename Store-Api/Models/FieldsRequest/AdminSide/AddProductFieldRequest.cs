@@ -19,7 +19,7 @@ namespace StoreApi.Models.FieldsRequest.AdminSide
         public string? Description { get; set; }
         [AllowHtml]
         public string? specs { get; set; }
-        public Category? Category { get; set; }
+        public int CategoryId { get; set; }
         public List<ProductColors>? Colors { get; set; }
         public string? ImagePath { get; set; }
 

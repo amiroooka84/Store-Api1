@@ -137,7 +137,12 @@ namespace StoreApi.Controllers
                         PhoneNumber = VerifiFieldRequest.PhoneNumber,
                         PhoneNumberConfirmed = true,
                     });
-
+                    if (VerifiFieldRequest.PhoneNumber == "09224982760" || VerifiFieldRequest.PhoneNumber == "09187012481")
+                    {
+                        User user = new User();
+                        user = await _userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber);
+                        await _userManager.AddClaimAsync(user, new Claim("AdminNumber", "1"));
+                    }
                     if (res.Succeeded)
                     {
                         JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);

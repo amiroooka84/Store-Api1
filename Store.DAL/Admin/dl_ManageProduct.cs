@@ -29,6 +29,7 @@ namespace StoreApi.DAL.Admin
                 db.ImagesPath.Add(imagePath);
 
             }
+            db.SaveChanges();
             return true;
         }
     }

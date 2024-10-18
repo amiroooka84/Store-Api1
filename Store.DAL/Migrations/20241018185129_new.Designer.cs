@@ -12,8 +12,8 @@ using StoreApi.DAL.DB;
 namespace StoreApi.DAL.Migrations
 {
     [DbContext(typeof(db))]
-    [Migration("20241017194616_new1")]
-    partial class new1
+    [Migration("20241018185129_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

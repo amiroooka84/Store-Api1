@@ -107,6 +107,7 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "VerifiCode")]
         public async Task<IActionResult> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
+           
             var Encrypt = "";
 
                 Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
@@ -123,7 +124,7 @@ namespace StoreApi.Controllers
                 if (bl_Account.ExsitUser(VerifiFieldRequest.PhoneNumber))
                 {
                     JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);
-                    var Result = jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
+                    var Result = await jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
                     if (Result == null)
                         return Ok(false);
                     else
@@ -137,11 +138,11 @@ namespace StoreApi.Controllers
                         PhoneNumber = VerifiFieldRequest.PhoneNumber,
                         PhoneNumberConfirmed = true,
                     });
-                    if (VerifiFieldRequest.PhoneNumber == "09224982760" || VerifiFieldRequest.PhoneNumber == "09187012481")
+                    if (VerifiFieldRequest.PhoneNumber == "09224982760" || VerifiFieldRequest.PhoneNumber == "09187012481" || VerifiFieldRequest.PhoneNumber == "09187012481")
                     {
                         User user = new User();
                         user = await _userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber);
-                        await _userManager.AddClaimAsync(user, new Claim("AdminNumber", "1"));
+                        await _userManager.AddClaimAsync(user, new Claim("AdminNumber" ,"1"));
                     }
                     if (res.Succeeded)
                     {

@@ -26,7 +26,9 @@ namespace StoreApi
             var Tokenkey = Encoding.ASCII.GetBytes(Constansts.JWT_SECURITY_KEY_FOR_TOKEN);
 
             string RoleUser = "";
-            if (await _userManager.IsInRoleAsync(await _userManager.FindByNameAsync(PhoneNumber) , "AdminOnly"))
+            User user = new User();
+            user = await _userManager.FindByNameAsync(PhoneNumber) ;
+            if (await _userManager.IsInRoleAsync(user, "AdminOnly"))
             {
                 RoleUser = "AdminOnly";
             }

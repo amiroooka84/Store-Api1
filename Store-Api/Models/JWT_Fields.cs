@@ -6,5 +6,6 @@
         public string? Token { get; set; }
         public string? PhoneNumber { get; set; }
         public DateTime Expire_Time { get; set; }
+        public string? Role { get; set; }
     }
 }

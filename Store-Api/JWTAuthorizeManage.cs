@@ -25,13 +25,15 @@ namespace StoreApi
 
             var Tokenkey = Encoding.ASCII.GetBytes(Constansts.JWT_SECURITY_KEY_FOR_TOKEN);
 
-            string RoleUser = "";
+            string RoleUser = "User";
             User user = new User();
             user = await _userManager.FindByNameAsync(PhoneNumber) ;
-            if (await _userManager.IsInRoleAsync(user, "AdminOnly"))
+            var isRole = _userManager.GetClaimsAsync(user).Result.First().ToString();
+            if (isRole  == "AdminNumber: 1")
             {
-                RoleUser = "AdminOnly";
+                RoleUser = "Admin";
             }
+
 
             var SecurityTokenDescriptor = new SecurityTokenDescriptor
             {
@@ -53,7 +55,8 @@ namespace StoreApi
             {
                 Token = Token,
                 PhoneNumber = PhoneNumber,
-                Expire_Time = TokenExpireTimeStamp
+                Expire_Time = TokenExpireTimeStamp,
+                Role = RoleUser,
             };
         }
 

@@ -72,6 +72,9 @@ internal class Program
             options.AddPolicy("AdminOnly",
             policy => policy.RequireClaim("AdminNumber")
             );
+            options.AddPolicy("User",
+            policy => policy.RequireClaim("UserNumber")
+            );
         });
 
         builder.Services.AddIdentity<User, IdentityRole>(option =>

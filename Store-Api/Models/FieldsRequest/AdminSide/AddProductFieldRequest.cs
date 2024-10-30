@@ -8,6 +8,7 @@ namespace StoreApi.Models.FieldsRequest.AdminSide
 {
     public class AddProductFieldRequest
     {
+ 
         public string? Name { get; set; }
         public string? Slack { get; set; }
         public int Code { get; set; }

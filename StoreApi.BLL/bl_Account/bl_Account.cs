@@ -19,6 +19,12 @@ namespace StoreApi.BLL.Account
             return dl_Account.AddAddress(address);
         }
 
+        public bool DeleteAddress(Address address)
+        {
+            dl_Account dl_Account = new dl_Account();
+            return dl_Account.DeleteAddress(address);
+        }
+
         public bool EditProfile(User user)
         {
             dl_Account dl_Account = new dl_Account();

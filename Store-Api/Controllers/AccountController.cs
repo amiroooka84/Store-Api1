@@ -201,7 +201,7 @@ namespace StoreApi.Controllers
 
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpPost(Name = "AddAddress")]
+        [HttpGet(Name = "AddAddress")]
         public async Task<IActionResult> AddAddress(AddAddressFieldRequest AddAddressFieldRequest)
         {
             bl_Account bl_Account = new bl_Account();
@@ -217,7 +217,21 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
-
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpDelete(Name = "DeleteAddress")]
+        public async Task<IActionResult> DeleteAddress(int id)
+        {
+            bl_Account bl_Account = new bl_Account();
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            Address address = new Address()
+            {
+                id = id,
+                UserId = user.Id
+            };
+            bool res = bl_Account.DeleteAddress(address);
+            return Ok(res);
+        }
 
 
 

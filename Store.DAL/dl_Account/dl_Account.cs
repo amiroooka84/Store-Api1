@@ -19,6 +19,20 @@ namespace StoreApi.DAL.dl_Account
             return true;
         }
 
+        public bool DeleteAddress(Address address)
+        {
+            db db = new db();
+            foreach (var item in db.Addresses)
+            {
+                if (item.id == address.id && item.UserId == address.UserId)
+                {
+                    db.Addresses.Remove(item);
+                }
+            }
+            db.SaveChanges();
+            return true;
+        }
+
         public bool EditProfile(User user)
         {
             db db = new db();

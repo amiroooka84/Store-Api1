@@ -21,6 +21,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Authentication;
+using StoreApi.Entity._Address;
 
 
 namespace StoreApi.Controllers
@@ -81,7 +82,7 @@ namespace StoreApi.Controllers
         //    return null;
         //}
 
-
+        #region login
         [HttpPost(Name = "PhoneNumber")]
         public IActionResult PhoneNumber(PhoneNumberFieldRequest phoneNumberFieldRequest)
         {
@@ -97,7 +98,7 @@ namespace StoreApi.Controllers
             string Code = random.Next(1000, 9999).ToString();
             sms.SendConfirmCode(Code, phoneNumberFieldRequest.PhoneNumber);
             DateTime expireTime = DateTime.Now.AddMinutes(5);
-            string Serialize = JsonConvert.SerializeObject(new ConfirmCode() {PhoneNumber = phoneNumberFieldRequest.PhoneNumber , Code = Code, ExpireTime = expireTime });
+            string Serialize = JsonConvert.SerializeObject(new ConfirmCode() { PhoneNumber = phoneNumberFieldRequest.PhoneNumber, Code = Code, ExpireTime = expireTime });
             var hashCode = _protector.Protect(Serialize);
             //var RetCode = dataProtector.Protect(Serialize);
             return Ok(new { hashCode, Code });
@@ -107,18 +108,18 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "VerifiCode")]
         public async Task<IActionResult> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
-           
+
             var Encrypt = "";
 
-                Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
+            Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
 
-                var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
-            if (ConfirmCode.PhoneNumber == VerifiFieldRequest.PhoneNumber && ConfirmCode.Code== VerifiFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
+            var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
+            if (ConfirmCode.PhoneNumber == VerifiFieldRequest.PhoneNumber && ConfirmCode.Code == VerifiFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
             {
 
                 if (VerifiFieldRequest.PhoneNumber?.Length != 11 || !VerifiFieldRequest.PhoneNumber.StartsWith("09"))
                 {
-                    return Ok(false) ;
+                    return Ok(false);
                 }
                 bl_Account bl_Account = new bl_Account();
                 if (bl_Account.ExsitUser(VerifiFieldRequest.PhoneNumber))
@@ -142,7 +143,7 @@ namespace StoreApi.Controllers
                     {
                         User user = new User();
                         user = await _userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber);
-                        await _userManager.AddClaimAsync(user, new Claim("AdminNumber" ,"1"));
+                        await _userManager.AddClaimAsync(user, new Claim("AdminNumber", "1"));
                     }
                     else
                     {
@@ -157,7 +158,7 @@ namespace StoreApi.Controllers
                         if (Result == null)
                             return Ok(false);
                         else
-                            return Ok(Result); 
+                            return Ok(Result);
                     }
 
                     return Ok(false);
@@ -168,7 +169,9 @@ namespace StoreApi.Controllers
                 return Ok(false);
             }
         }
+        #endregion
 
+        #region Profile
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost(Name = "EditProfile")]
         public IActionResult EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
@@ -178,17 +181,41 @@ namespace StoreApi.Controllers
             {
                 FirstName = EditProfileFieldRequest.FirstName,
                 LastName = EditProfileFieldRequest.LastName,
-                Address = EditProfileFieldRequest.Address,
-                PostCode = EditProfileFieldRequest.PostCode,
                 PhoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()
             };
             bool res = bl_Account.EditProfile(user);
-            return Ok(res); 
+            return Ok(res);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost(Name = "GetProfile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            bl_Account bl_Account = new bl_Account();
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            List<Address> Addresses = bl_Account.GetAddresses(user.Id);
+            return Ok(new { user, Addresses });
+        }
+        #endregion
 
 
-
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost(Name = "AddAddress")]
+        public async Task<IActionResult> AddAddress(AddAddressFieldRequest AddAddressFieldRequest)
+        {
+            bl_Account bl_Account = new bl_Account();
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            Address address = new Address()
+            {
+                _Address = AddAddressFieldRequest.Address,
+                PostCode = AddAddressFieldRequest.PostCode,
+                UserId = user.Id
+            };
+            bool res = bl_Account.AddAddress(address);
+            return Ok(res);
+        }
 
 
 

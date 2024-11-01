@@ -1,4 +1,5 @@
 ﻿using StoreApi.DAL.DB;
+using StoreApi.Entity._Address;
 using StoreApi.Entity._User;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ namespace StoreApi.DAL.dl_Account
 {
     public class dl_Account
     {
+        public bool AddAddress(Address address)
+        {
+            db db = new db();
+            db.Addresses.Add(address);
+            db.SaveChanges();
+            return true;
+        }
 
         public bool EditProfile(User user)
         {
@@ -20,8 +28,7 @@ namespace StoreApi.DAL.dl_Account
                 {
                     item.FirstName = user.FirstName;
                     item.LastName = user.LastName;
-                    item.Address = user.Address;
-                    item.PostCode = user.PostCode;
+
                 }
             }
             db.SaveChanges();

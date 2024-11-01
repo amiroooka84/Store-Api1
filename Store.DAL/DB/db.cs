@@ -11,6 +11,7 @@ using StoreApi.Entity._Category;
 using StoreApi.Entity._Order;
 using StoreApi.Entity._Basket;
 using StoreApi.Entity._Image;
+using StoreApi.Entity._Address;
 
 namespace StoreApi.DAL.DB
 {
@@ -30,12 +31,14 @@ namespace StoreApi.DAL.DB
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ProductOrder> ProductOrders { get; set; }
         public DbSet<ImagePath> ImagesPath { get; set; }
+  
 
     }
 }

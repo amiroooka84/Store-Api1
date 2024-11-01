@@ -1,4 +1,5 @@
 ﻿using StoreApi.DAL.dl_Account;
+using StoreApi.Entity._Address;
 using StoreApi.Entity._User;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,13 @@ namespace StoreApi.BLL.Account
     public class bl_Account
     {
         dl_Account dl_Account = new dl_Account();
+
+        public bool AddAddress(Address address)
+        {
+            dl_Account dl_Account = new dl_Account();
+            return dl_Account.AddAddress(address);
+        }
+
         public bool EditProfile(User user)
         {
             dl_Account dl_Account = new dl_Account();
@@ -21,6 +29,16 @@ namespace StoreApi.BLL.Account
         {
             dl_Account dl_Account = new dl_Account();
             return dl_Account.ExsitUser(phoneNumber);
+        }
+
+        public List<Address> GetAddresses(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GetProfile(string id)
+        {
+            throw new NotImplementedException();
         }
 
         public bool UserVerification(string? phoneNumber, string? password)

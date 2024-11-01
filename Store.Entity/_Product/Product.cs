@@ -10,6 +10,7 @@ namespace StoreApi.Entity._Product
 {
     public class Product
     {
+
         public int id { get; set; }
         public string Name { get; set; }
         public string Slack { get; set; }

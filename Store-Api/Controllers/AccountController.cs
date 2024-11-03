@@ -189,7 +189,7 @@ namespace StoreApi.Controllers
 
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpPost(Name = "GetProfile")]
+        [HttpGet(Name = "GetProfile")]
         public async Task<IActionResult> GetProfile()
         {
             bl_Account bl_Account = new bl_Account();

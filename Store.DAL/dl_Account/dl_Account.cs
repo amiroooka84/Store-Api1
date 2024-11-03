@@ -62,6 +62,19 @@ namespace StoreApi.DAL.dl_Account
             return false;
         }
 
+        public List<Address> GetAddresses(string id)
+        {
+            db db = new db();
+            List<Address> addresses = new List<Address>();
+            foreach(var item in db.Addresses)
+            {
+                if (item.UserId == id)
+                {
+                    addresses.Add(item);
+                }
+            }
+            return addresses;
+        }
 
         public bool UserVerification(string phoneNumber, string password)
         {

@@ -39,13 +39,10 @@ namespace StoreApi.BLL.Account
 
         public List<Address> GetAddresses(string id)
         {
-            throw new NotImplementedException();
+            dl_Account dl_Account = new dl_Account();
+            return dl_Account.GetAddresses(id);
         }
 
-        public bool GetProfile(string id)
-        {
-            throw new NotImplementedException();
-        }
 
         public bool UserVerification(string? phoneNumber, string? password)
         {

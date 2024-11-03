@@ -187,6 +187,7 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
+
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet(Name = "GetProfile")]
         public async Task<IActionResult> GetProfile()
@@ -197,11 +198,10 @@ namespace StoreApi.Controllers
             List<Address> Addresses = bl_Account.GetAddresses(user.Id);
             return Ok(new { user, Addresses });
         }
-        #endregion
 
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpGet(Name = "AddAddress")]
+        [HttpPost(Name = "AddAddress")]
         public async Task<IActionResult> AddAddress(AddAddressFieldRequest AddAddressFieldRequest)
         {
             bl_Account bl_Account = new bl_Account();
@@ -216,6 +216,7 @@ namespace StoreApi.Controllers
             bool res = bl_Account.AddAddress(address);
             return Ok(res);
         }
+
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete(Name = "DeleteAddress")]
@@ -232,6 +233,10 @@ namespace StoreApi.Controllers
             bool res = bl_Account.DeleteAddress(address);
             return Ok(res);
         }
+        #endregion
+
+
+
 
 
 

@@ -97,11 +97,9 @@ internal class Program
             .SetDefaultKeyLifetime(new TimeSpan(30, 0, 0, 0))
 ;
 
-      
-
-
 
         var app = builder.Build();
+
         //if (app.Environment.IsDevelopment())
         //{
             app.UseDeveloperExceptionPage();

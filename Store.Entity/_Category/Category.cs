@@ -10,7 +10,6 @@ namespace StoreApi.Entity._Category
 {
     public class Category
     {
-
         public int id { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }

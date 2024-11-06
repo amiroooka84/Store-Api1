@@ -13,7 +13,7 @@ namespace StoreApi.BLL.Account
     {
         dl_Account dl_Account = new dl_Account();
 
-        public bool AddAddress(Address address)
+        public Address AddAddress(Address address)
         {
             dl_Account dl_Account = new dl_Account();
             return dl_Account.AddAddress(address);

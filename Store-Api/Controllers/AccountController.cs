@@ -213,7 +213,7 @@ namespace StoreApi.Controllers
                 PostCode = AddAddressFieldRequest.PostCode,
                 UserId = user.Id
             };
-            bool res = bl_Account.AddAddress(address);
+            Address res = bl_Account.AddAddress(address);
             return Ok(res);
         }
 

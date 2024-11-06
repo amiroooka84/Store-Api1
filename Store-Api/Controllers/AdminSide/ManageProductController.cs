@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreApi.BLL.Account;
 using StoreApi.BLL.Admin;
+using StoreApi.Entity._Category;
 using StoreApi.Entity._Product;
-using StoreApi.Models.FieldsRequest.AdminSide;
+using StoreApi.Models.FieldsRequest.AdminSide.ManageProduct;
 
 
-namespace StoreApi.Controllers
+namespace StoreApi.Controllers.AdminSide
 {
     [Route("/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class ManageProductController : ControllerBase
     {
         [HttpPost(Name = "AddProduct")]
-        public IActionResult AddProduct(AddProductFieldRequest productFieldRequest) 
+        public IActionResult AddProduct(AddProductFieldRequest productFieldRequest)
         {
             bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
             Product product = new Product()
@@ -22,7 +25,7 @@ namespace StoreApi.Controllers
                 Slack = productFieldRequest.Slack,
                 Code = productFieldRequest.Code,
                 Number = productFieldRequest.Number,
-                Discount = productFieldRequest.Discount,    
+                Discount = productFieldRequest.Discount,
                 Price = productFieldRequest.Price,
                 Description = productFieldRequest.Description,
                 Colors = productFieldRequest.Colors,
@@ -31,12 +34,12 @@ namespace StoreApi.Controllers
                 CategoryId = productFieldRequest.CategoryId,
 
             };
-            bool res = bl_ManageProduct.AddProduct(product , productFieldRequest.ImagesPath);
+            Product res = bl_ManageProduct.AddProduct(product, productFieldRequest.ImagesPath);
 
             return Ok(res);
-        
-        
+
+
         }
-      
+
     }
 }

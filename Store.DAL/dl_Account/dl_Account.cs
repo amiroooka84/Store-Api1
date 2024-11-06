@@ -11,12 +11,12 @@ namespace StoreApi.DAL.dl_Account
 {
     public class dl_Account
     {
-        public bool AddAddress(Address address)
+        public Address AddAddress(Address address)
         {
             db db = new db();
-            db.Addresses.Add(address);
+            var res = db.Addresses.Add(address);
             db.SaveChanges();
-            return true;
+            return res.Entity;
         }
 
         public bool DeleteAddress(Address address)
@@ -29,8 +29,15 @@ namespace StoreApi.DAL.dl_Account
                     db.Addresses.Remove(item);
                 }
             }
-            db.SaveChanges();
-            return true;
+            var res = db.SaveChanges();
+            if (res == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool EditProfile(User user)
@@ -45,8 +52,15 @@ namespace StoreApi.DAL.dl_Account
 
                 }
             }
-            db.SaveChanges();
-            return true;
+            var res = db.SaveChanges();
+            if (res == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool ExsitUser(string phoneNumber)

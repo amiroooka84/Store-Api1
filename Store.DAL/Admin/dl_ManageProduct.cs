@@ -1,4 +1,5 @@
 ﻿using StoreApi.DAL.DB;
+using StoreApi.Entity._Category;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
 using System;
@@ -11,7 +12,7 @@ namespace StoreApi.DAL.Admin
 {
     public class dl_ManageProduct
     {
-        public bool AddProduct(Product product, List<string> imagesPath)
+        public Product AddProduct(Product product, List<string> imagesPath)
         {
             db db = new db();   
             var ResultProduct = db.Products.Add(product);
@@ -25,12 +26,10 @@ namespace StoreApi.DAL.Admin
                     Image = image,
                     Product = ResultProduct.Entity
                 };
-
                 db.ImagesPath.Add(imagePath);
-
             }
             db.SaveChanges();
-            return true;
+            return ResultProduct.Entity;
         }
     }
 }

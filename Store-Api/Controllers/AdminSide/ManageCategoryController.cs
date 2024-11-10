@@ -61,7 +61,7 @@ namespace StoreApi.Controllers.AdminSide
             return Ok(res);
         }
 
-        [HttpDelete(Name = "GetCategoryById")]
+        [HttpGet(Name = "GetCategoryById")]
         public IActionResult GetCategoryById(int id)
         {
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();

@@ -26,6 +26,7 @@ namespace StoreApi.DAL.Admin
                 if (item.id == id)
                 {
                     db.Categories.Remove(item);
+                    break;
                 }
             }
             var res = db.SaveChanges();
@@ -49,6 +50,8 @@ namespace StoreApi.DAL.Admin
                     item.Name = category.Name;
                     item.ImagePath = category.ImagePath;
                     item.CategoryId = category.CategoryId;
+                    category = item;
+                    break;
                 }
             }
             db.SaveChanges();

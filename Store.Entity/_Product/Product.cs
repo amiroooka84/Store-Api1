@@ -23,7 +23,7 @@ namespace StoreApi.Entity._Product
         public string specs { get; set; }
         public string ImagePath { get; set; }
         public int CategoryId { get; set; }
-        public List<ProductColors> Colors { get; set; }
+
 
     }
 
@@ -32,5 +32,7 @@ namespace StoreApi.Entity._Product
         public int id { get; set; }
         public string Color { get; set; }
         public string CodeColor { get; set; }
+        public int ProductId { get; set; }
+
     }
 }

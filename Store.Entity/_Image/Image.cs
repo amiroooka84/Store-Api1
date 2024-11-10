@@ -10,7 +10,7 @@ namespace StoreApi.Entity._Image
     public class ImagePath
     {
         public int id { get; set; }
-        public Product Product { get; set; }
+        public int ProductId { get; set; }
         public string Image { get; set; }
     }
 }

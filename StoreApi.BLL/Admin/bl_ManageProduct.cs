@@ -12,10 +12,10 @@ namespace StoreApi.BLL.Admin
 {
     public class bl_ManageProduct
     {
-        public Product AddProduct(Product product, List<ProductColors>? colors, List<string>? imagesPath)
+        public Product AddProduct(Product product, List<ProductColors>? colors, List<string>? imagesPath, List<string>? tags)
         {
             dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
-            return dl_ManageProduct.AddProduct(product ,colors, imagesPath);
+            return dl_ManageProduct.AddProduct(product ,colors, imagesPath , tags);
 
         }
 
@@ -25,10 +25,37 @@ namespace StoreApi.BLL.Admin
             return dl_ManageProduct.DeleteProduct(id);
         }
 
-        public Product EditProduct(Product product, List<ProductColors>? colors, List<string>? imagesPath)
+        public Product EditProduct(Product product, List<ProductColors>? colors, List<string>? imagesPath, List<string>? tags)
         {
             dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
-            return dl_ManageProduct.EditProduct(product, colors ,imagesPath);
+            return dl_ManageProduct.EditProduct(product, colors ,imagesPath , tags);
+        }
+
+        public List<Product> GetAllProducts()
+        {
+            dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
+            return dl_ManageProduct.GetAllProducts();
+        }
+
+        public Product GetProductById(int ProductId)
+        {
+            dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
+            return dl_ManageProduct.GetProductById(ProductId);
+        }
+        public List<ProductColors> GetProductColors(int ProductId)
+        {
+            dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
+            return dl_ManageProduct.GetProductColors(ProductId);
+        }
+        public List<ProductTag> GetProductTags(int ProductId)
+        {
+            dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
+            return dl_ManageProduct.GetProductTags(ProductId);
+        }
+        public List<ImagePath> GetProductImages(int ProductId)
+        {
+            dl_ManageProduct dl_ManageProduct = new dl_ManageProduct();
+            return dl_ManageProduct.GetProductImages(ProductId);
         }
     }
 }

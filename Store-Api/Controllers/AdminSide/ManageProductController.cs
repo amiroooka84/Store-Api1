@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StoreApi.BLL.Account;
 using StoreApi.BLL.Admin;
 using StoreApi.Entity._Category;
+using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageProduct;
 
@@ -33,7 +34,7 @@ namespace StoreApi.Controllers.AdminSide
                 CategoryId = productFieldRequest.CategoryId,
 
             };
-            Product res = bl_ManageProduct.AddProduct(product, productFieldRequest.Colors, productFieldRequest.ImagesPath);
+            Product res = bl_ManageProduct.AddProduct(product, productFieldRequest.Colors, productFieldRequest.ImagesPath , productFieldRequest.Tags);
             return Ok(res);
         }
 
@@ -57,7 +58,7 @@ namespace StoreApi.Controllers.AdminSide
                 CategoryId = EditProductFieldRequest.CategoryId,
 
             };
-            Product res = bl_ManageProduct.EditProduct(product, EditProductFieldRequest.Colors , EditProductFieldRequest.ImagesPath);
+            Product res = bl_ManageProduct.EditProduct(product, EditProductFieldRequest.Colors , EditProductFieldRequest.ImagesPath , EditProductFieldRequest.Tags);
 
             return Ok(res);
         }
@@ -68,6 +69,28 @@ namespace StoreApi.Controllers.AdminSide
             bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
             bool res = bl_ManageProduct.DeleteProduct(id);
             return Ok(res);
+        }
+
+
+        [HttpGet(Name = "GetAllProducts")]
+        public IActionResult GetAllProducts()
+        {
+            bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
+            List<Product> res = bl_ManageProduct.GetAllProducts();
+            return Ok(res);
+            
+        }
+
+        [HttpGet(Name = "GetProductById")]
+        public IActionResult GetProductById(int id)
+        {
+            bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
+            Product Product = bl_ManageProduct.GetProductById(id);
+            List<ProductColors> colors = bl_ManageProduct.GetProductColors(id);
+            List<ProductTag> tags = bl_ManageProduct.GetProductTags(id);
+            List<ImagePath> images = bl_ManageProduct.GetProductImages(id);
+            return Ok(new {Product , colors , tags , images});
+
         }
     }
 }

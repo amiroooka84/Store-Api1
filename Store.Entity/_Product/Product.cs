@@ -35,4 +35,11 @@ namespace StoreApi.Entity._Product
         public int ProductId { get; set; }
 
     }
+
+    public  class ProductTag
+    {
+        public int id { get; set; }
+        public string Tag { get; set; }
+        public int ProductId { get; set; }
+    }
 }

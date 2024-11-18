@@ -22,6 +22,7 @@ namespace StoreApi.Models.FieldsRequest.AdminSide.ManageProduct
         public string? specs { get; set; }
         public int CategoryId { get; set; }
         public List<ProductColors>? Colors { get; set; }
+        public List<string>? Tags { get; set; }
         public string? ImagePath { get; set; }
 
         public List<string>? ImagesPath { get; set; }

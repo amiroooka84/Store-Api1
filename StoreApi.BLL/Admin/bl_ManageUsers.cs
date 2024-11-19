@@ -10,6 +10,12 @@ namespace StoreApi.BLL.Admin
 {
     public class bl_ManageUsers
     {
+        public bool DeleteUser(string id)
+        {
+            dl_ManageUsers dl_ManageUsers = new dl_ManageUsers();
+            return dl_ManageUsers.DeleteUser(id);
+        }
+
         public List<User> GetAllUsers()
         {
             dl_ManageUsers dl_ManageUsers = new dl_ManageUsers();

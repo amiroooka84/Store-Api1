@@ -66,7 +66,7 @@ namespace StoreApi.Controllers.AdminSide
         {
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
             Category res = bl_ManageCategory.GetCategoryById(id);
-            return Ok(id);
+            return Ok(res);
         }
     }
 }

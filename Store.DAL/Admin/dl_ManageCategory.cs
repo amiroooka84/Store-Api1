@@ -43,17 +43,17 @@ namespace StoreApi.DAL.Admin
         public Category EditCategory(Category category)
         {
             db db = new db();
-            foreach (var item in db.Categories)
-            {
-                if (item.id == category.id)
-                {
-                    item.Name = category.Name;
-                    item.ImagePath = category.ImagePath;
-                    item.CategoryId = category.CategoryId;
-                    category = item;
-                    break;
-                }
-            }
+            db.Categories.Update(category);
+            //foreach (var item in db.Categories)
+            //{
+            //    if (item.id == category.id)
+            //   {
+            //        item.Name = category.Name;
+            //        item.ImagePath = category.ImagePath;
+            //        item.CategoryId = category.CategoryId;
+            //        break;
+            //    }
+            //}
             db.SaveChanges();
             return category;
         }

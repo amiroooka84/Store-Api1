@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using StoreApi.BLL.Admin;
 using StoreApi.Entity._Category;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageCategory;
+using StoreApi.Models.FieldsRequest.IDField;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -36,7 +37,7 @@ namespace StoreApi.Controllers.AdminSide
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
             Category category = new Category()
             {
-                id = editCategoryField.CategoryId,
+                id = editCategoryField.id,
                 Name = editCategoryField.Name,
                 ImagePath= editCategoryField.ImagePath,
                 CategoryId= editCategoryField.CategoryId,
@@ -46,10 +47,10 @@ namespace StoreApi.Controllers.AdminSide
         }
 
         [HttpDelete(Name = "DeleteCategory")]
-        public IActionResult DeleteCategory(int id)
+        public IActionResult DeleteCategory(IntIdField id)
         {        
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            bool res = bl_ManageCategory.DeleteCategory(id);
+            bool res = bl_ManageCategory.DeleteCategory(id.id);
             return Ok(res);
         }
 
@@ -62,10 +63,10 @@ namespace StoreApi.Controllers.AdminSide
         }
 
         [HttpGet(Name = "GetCategoryById")]
-        public IActionResult GetCategoryById(int id)
+        public IActionResult GetCategoryById(IntIdField id)
         {
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            Category res = bl_ManageCategory.GetCategoryById(id);
+            Category res = bl_ManageCategory.GetCategoryById(id.id);
             return Ok(res);
         }
     }

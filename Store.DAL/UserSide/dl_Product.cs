@@ -116,5 +116,31 @@ namespace StoreApi.DAL.UserSide
             //cm.ExecuteNonQuery();
             return ImagePaths;
         }
+
+        public List<ProductTag> GetProductTags(int id)
+        {
+            List<ProductTag> ProductTags = new List<ProductTag>();
+            var con = new SqlConnection(ConStr);
+            // writing sql query  
+            SqlCommand cm = new SqlCommand("select * from ProductTags where ProductTags.ProductId = " + id + ";", con);
+            // Opening Connection  
+            con.Open();
+            SqlDataReader sqlDataReader = cm.ExecuteReader();
+            while (sqlDataReader.Read())
+            {
+                ProductTag productTag = new ProductTag()
+                {
+                    id = (int)sqlDataReader["id"],
+                    ProductId = (int)sqlDataReader["ProductId"],
+                    Tag = sqlDataReader["Tag"].ToString()
+                };
+                ProductTags.Add(productTag);
+            }
+
+            con.Close();
+            // Executing the SQL query  
+            //cm.ExecuteNonQuery();
+            return ProductTags;
+        }
     }
 }

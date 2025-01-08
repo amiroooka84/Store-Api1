@@ -26,5 +26,10 @@ namespace StoreApi.BLL.UserSide
             dl_Product dl_Product = new dl_Product();
             return dl_Product.GetProductImages(id);
         }
+        public List<ProductTag> GetProductTags(int id)
+        {
+            dl_Product dl_Product = new dl_Product();
+            return dl_Product.GetProductTags(id);
+        }
     }
 }

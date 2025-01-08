@@ -18,7 +18,8 @@ namespace StoreApi.Controllers.UserSide
             Product product = bl_Product.GetProduct(id.id);
             List<ImagePath> imagePaths = bl_Product.GetProductImages(id.id);
             List<ProductColors> productColors = bl_Product.GetProductColors(id.id);
-            return Ok(new { product , imagePaths , productColors });
+            List<ProductTag> productTags = bl_Product.GetProductTags(id.id);
+            return Ok(new { product , imagePaths , productColors , productTags});
         }
     }
 }

@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="User\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Store.DAL\StoreApi.DAL.csproj" />
     <ProjectReference Include="..\Store.Entity\StoreApi.Entity.csproj" />
   </ItemGroup>

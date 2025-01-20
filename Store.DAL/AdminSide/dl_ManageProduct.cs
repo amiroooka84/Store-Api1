@@ -1,4 +1,5 @@
-﻿using StoreApi.DAL.DB;
+﻿using Microsoft.Data.SqlClient;
+using StoreApi.DAL.DB;
 using StoreApi.Entity._Category;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
@@ -21,7 +22,6 @@ namespace StoreApi.DAL.Admin
         {
             db db = new db();   
             var ResultProduct = db.Products.Add(product);
-            db.SaveChanges();
             AddColors(ResultProduct.Entity , colors);
             AddImages(ResultProduct.Entity, imagesPath);
             AddTags(ResultProduct.Entity, tags);
@@ -34,25 +34,7 @@ namespace StoreApi.DAL.Admin
         public Product EditProduct(Product product, List<ProductColors> colors, List<string> imagesPath, List<string> tags)
         {
             db db = new db();
-            foreach (var item in db.Products)
-            {
-                if (item.id == product.id)
-                {
-                    item.Name = product.Name;
-                    item.Brand = product.Brand;
-                    item.Slack = product.Slack;
-                    item.Code = product.Code;
-                    item.Number = product.Number;
-                    item.Discount = product.Discount;
-                    item.Price = product.Price;
-                    item.Description = product.Description;
-                    item.ImagePath = product.ImagePath;
-                    item.specs = product.specs;
-                    item.CategoryId = product.CategoryId;
-                    product = item;
-                    break;
-                }
-            }
+            db.Products.Update(product);
             RemoveColors(product);
             AddColors(product, colors);
             RemoveImages(product);
@@ -66,16 +48,10 @@ namespace StoreApi.DAL.Admin
         public bool DeleteProduct(int id)
         {
             db db = new db();
-            foreach (var item in db.Products)
-            {
-                if (item.id == id)
-                {
-                    db.Products.Remove(item);
-                    RemoveImages(item);
-                    RemoveColors(item);
-                    break;
-                }
-            }
+            Product product =  db.Products.Remove(new Product() { id = id}).Entity;
+            RemoveImages(product);
+            RemoveColors(product);
+            RemoveTags(product);
             var res = db.SaveChanges();
             if (res == 1)
             {
@@ -95,73 +71,137 @@ namespace StoreApi.DAL.Admin
 
         public Product GetProductById(int ProductId)
         {
-            db db = new db();
-            foreach (var item in db.Products)
+            Product product = new Product(); 
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("select * from dbo.Products where id = " + ProductId + ";", con);
+            SqlDataReader rdr;
+            try
             {
-                if (item.id == ProductId)
-                {
-                    return item;
-                }
+                rdr = cm.ExecuteReader();
+
             }
-            return null;
+            catch (Exception)
+            {
+                return null;
+            }
+            while (rdr.Read())
+            {
+                product.id = (int)rdr["id"];
+                product.Name = rdr["Name"].ToString();
+                product.Slack = rdr["Slack"].ToString();
+                product.Brand = rdr["Brand"].ToString();
+                product.Price = (int)rdr["Price"];
+                product.Discount = (int)rdr["Discount"];
+                product.ImagePath = rdr["ImagePath"].ToString();
+                product.CategoryId = (int)rdr["CategoryId"];
+                product.Code = (int)rdr["Code"];
+                product.Description = rdr["Description"].ToString();
+                product.specs = rdr["specs"].ToString();
+                product.Number = (int)rdr["Number"];
+            }
+            con.Close();
+            return product;
         }
         public List<ProductColors> GetProductColors(int ProductId)
         {
-            db db = new db();
             List<ProductColors> productColors = new List<ProductColors>();
-            foreach (var item in db.ProductColors)
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("select * from dbo.ProductColors where ProductId =" + ProductId+ ";", con);
+            SqlDataReader rdr;
+            try
             {
-                if (item.ProductId == ProductId)
-                {
-                    productColors.Add(item);
-                }
+                rdr = cm.ExecuteReader();
+
             }
+            catch (Exception)
+            {
+                return null;
+            }
+            while (rdr.Read())
+            {
+                ProductColors productColor = new ProductColors();
+                productColor.id = (int)rdr["id"];
+                productColor.Color = rdr["Color"].ToString();
+                productColor.CodeColor = rdr["CodeColor"].ToString();
+                productColor.Number = (int)rdr["Number"];
+                productColor.Discount = (int)rdr["Discount"];
+                productColor.Price = (int)rdr["Price"];
+                productColor.ProductId = (int)rdr["ProductId"];
+                productColors.Add(productColor);
+            }
+            con.Close();
             return productColors;
         }
 
         public List<ProductTag> GetProductTags(int ProductId)
         {
-            db db = new db();
-            List<ProductTag> ProductTag = new List<ProductTag>();
-            foreach (var item in db.ProductTags)
+            List<ProductTag> ProductTags = new List<ProductTag>();
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("select * from dbo.ProductTags where ProductId =" + ProductId + ";", con);
+            SqlDataReader rdr;
+            try
             {
-                if (item.ProductId == ProductId)
-                {
-                    ProductTag.Add(item);
-                }
+                rdr = cm.ExecuteReader();
+
             }
-            return ProductTag;
+            catch (Exception)
+            {
+                return null;
+            }
+            while (rdr.Read())
+            {
+                ProductTag productTag = new ProductTag();
+                productTag.id = (int)rdr["id"];
+                productTag.Tag = rdr["Tag"].ToString();
+                productTag.ProductId = (int)rdr["ProductId"];
+                ProductTags.Add(productTag);
+            }
+            con.Close();
+            return ProductTags;
         }
 
         public List<ImagePath> GetProductImages(int ProductId)
         {
-            db db = new db();
-            List<ImagePath> ImagePath = new List<ImagePath>();
-            foreach (var item in db.ImagesPath)
+            List<ImagePath> ImagePaths = new List<ImagePath>();
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("select * from dbo.ImagesPath where ProductId =" + ProductId + ";", con);
+            SqlDataReader rdr;
+            try
             {
-                if (item.ProductId == ProductId)
-                {
-                    ImagePath.Add(item);
-                }
+                rdr = cm.ExecuteReader();
+
             }
-            return ImagePath;
+            catch (Exception)
+            {
+                return null;
+            }
+            while (rdr.Read())
+            {
+                ImagePath imagePath = new ImagePath();
+                imagePath.id = (int)rdr["id"];
+                imagePath.Image = rdr["Image"].ToString();
+                imagePath.ProductId = (int)rdr["ProductId"];
+                ImagePaths.Add(imagePath);
+            }
+            con.Close();
+            return ImagePaths;
         }
 
 
 
-
+        ////////////////////////////////////////////
 
         private void RemoveImages(Product product)
         {
-            db db = new db();
-            foreach (var item in db.ImagesPath)
-            {
-                if (item.ProductId == product.id)
-                {
-                    db.ImagesPath.Remove(item);
-                }
-            }
-            db.SaveChanges();
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("delete from dbo.ImagesPath where ProductId = "+product.id+";", con);
+            cm.ExecuteNonQuery();
+            con.Close();
         }
         private void AddImages(Product product , List<string> imagesPath)
         {
@@ -180,15 +220,11 @@ namespace StoreApi.DAL.Admin
         /////////////
         private void RemoveColors(Product product)
         {
-            db db = new db();
-            foreach (var item in db.ProductColors)
-            {
-                if (item.ProductId == product.id)
-                {
-                    db.ProductColors.Remove(item);
-                }
-            }
-            db.SaveChanges();
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("delete from dbo.ProductColors where ProductId = " + product.id + ";", con);
+            cm.ExecuteNonQuery();
+            con.Close();
         }
         private void AddColors(Product product, List<ProductColors> productColors)
         {
@@ -203,15 +239,11 @@ namespace StoreApi.DAL.Admin
         /////////////
         private void RemoveTags(Product product)
         {
-            db db = new db();
-            foreach (var item in db.ProductTags)
-            {
-                if (item.ProductId == product.id)
-                {
-                    db.ProductTags.Remove(item);
-                }
-            }
-            db.SaveChanges();
+            var con = new SqlConnection(ConStr.con);
+            con.Open();
+            SqlCommand cm = new SqlCommand("delete from dbo.ProductTags where ProductId = " + product.id + ";", con);
+            cm.ExecuteNonQuery();
+            con.Close();
         }
         private void AddTags(Product product, List<string> tags)
         {

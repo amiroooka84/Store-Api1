@@ -40,7 +40,6 @@ namespace StoreApi.Controllers
         {
             _userManager = userManager;
             _SignInManager = SignInManager;
-            //_protector = provider.CreateProtector("AccountController", new string[] { "Account" });
 
             var serviceCollection = new ServiceCollection();
 
@@ -100,7 +99,6 @@ namespace StoreApi.Controllers
             DateTime expireTime = DateTime.Now.AddMinutes(5);
             string Serialize = JsonConvert.SerializeObject(new ConfirmCode() { PhoneNumber = phoneNumberFieldRequest.PhoneNumber, Code = Code, ExpireTime = expireTime });
             var hashCode = _protector.Protect(Serialize);
-            //var RetCode = dataProtector.Protect(Serialize);
             return Ok(new { hashCode, Code });
         }
 

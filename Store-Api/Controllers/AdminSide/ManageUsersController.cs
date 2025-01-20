@@ -30,10 +30,10 @@ namespace StoreApi.Controllers.AdminSide
         }
 
         [HttpDelete(Name = "DeleteUser")]
-        public IActionResult DeleteUser(StringIdField id)
+        public async Task<IActionResult> DeleteUser(StringIdField id)
         {
-            bl_ManageUsers dl_ManageUsers = new bl_ManageUsers();
-            bool res = dl_ManageUsers.DeleteUser(id.id);
+            User user = await _userManager.FindByIdAsync(id.id);
+            bool res =  _userManager.DeleteAsync(user).Result.Succeeded;
             return Ok(res);
         }
 

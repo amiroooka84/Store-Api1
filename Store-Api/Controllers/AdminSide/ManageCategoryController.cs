@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StoreApi.BLL.Admin;
@@ -17,31 +18,27 @@ namespace StoreApi.Controllers.AdminSide
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class ManageCategoryController : ControllerBase
     {
+        private readonly IMapper _mapper;
+        public ManageCategoryController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
         [HttpPost(Name = "AddCategory")]
         public IActionResult AddCategory(AddCategoryFieldRequest CategoryFieldRequest)
         {
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            Category category = new Category()
-            {
-                Name = CategoryFieldRequest.Name,
-                CategoryId = CategoryFieldRequest.CategoryId,
-                ImagePath = CategoryFieldRequest.ImagePath,
-            };
+            Category category = new Category();
+            category = _mapper.Map<AddCategoryFieldRequest, Category>(CategoryFieldRequest);
             Category res = bl_ManageCategory.AddCategory(category);
             return Ok(res);
         }
 
-        [HttpPost(Name = "EditCategory")]
-        public IActionResult EditCategory(EditCategoryFieldRequest editCategoryField)
+        [HttpPut(Name = "EditCategory")]
+        public IActionResult EditCategory(EditCategoryFieldRequest EditCategoryField)
         {
             bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            Category category = new Category()
-            {
-                id = editCategoryField.id,
-                Name = editCategoryField.Name,
-                ImagePath= editCategoryField.ImagePath,
-                CategoryId= editCategoryField.CategoryId,
-            };
+            Category category = new Category();
+            category = _mapper.Map<EditCategoryFieldRequest, Category>(EditCategoryField);
             Category res = bl_ManageCategory.EditCategory(category);
             return Ok(res);
         }

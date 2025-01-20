@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace StoreApi.DAL
 {
-    public class ConStr
+    public static class ConStr
     {
-        public string con { get; set; }
-
+        public static string con { get; set; } = "Data Source=.;Initial Catalog=StoreApi1;Integrated Security=True";
     }
+
 }

@@ -25,8 +25,7 @@ namespace StoreApi.DAL.DB
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=StoreApi1;Integrated Security=True");
-            //optionsBuilder.UseSqlServer("Server=.; Initial Catalog=stockss; User ID=stockss; Password=stockss.123; MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer(ConStr.con);
             base.OnConfiguring(optionsBuilder);
         }
 

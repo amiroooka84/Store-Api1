@@ -11,7 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StoreApi;
 using StoreApi.DAL.DB;
+using StoreApi.Entity._Product;
 using StoreApi.Entity._User;
+using StoreApi.Models.FieldsRequest.AdminSide.ManageProduct;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -66,7 +68,7 @@ internal class Program
                 ValidateAudience = false
             };
         });
-
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnly",

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using SqlDataReaderMapper;
 using StoreApi.DAL.DB;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
@@ -9,6 +10,7 @@ using StoreApi.Entity._User;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,22 +20,11 @@ namespace StoreApi.DAL.UserSide
 {
     public class dl_Product
     {
-        string ConStr;
-        public dl_Product()
-        {
-            using (StreamReader r = new StreamReader(@"C:\\Users\\PQ\\source\\repos\\Store-Api1\\Store.DAL\\ConStr.json"))
-            {
-                string json = r.ReadToEnd();
-                ConStr = JsonConvert.DeserializeObject<string>(json);
-
-            }
-        }
         public Product GetProduct(int id) {
+            
             Product product = new Product();
-            var con = new SqlConnection(ConStr);
-            // writing sql query  
+            var con = new SqlConnection(ConStr.con);
             SqlCommand cm = new SqlCommand("select * from Products where Products.id = "+id+";", con);
-            // Opening Connection  
             con.Open();
             SqlDataReader sqlDataReader = cm.ExecuteReader();
             while (sqlDataReader.Read())
@@ -54,20 +45,15 @@ namespace StoreApi.DAL.UserSide
                     specs = sqlDataReader["specs"].ToString(),
                 };
             }
-
             con.Close();
-            // Executing the SQL query  
-            //cm.ExecuteNonQuery();
             return product;
         }
 
         public List<ProductColors> GetProductColors(int id)
         {
             List<ProductColors> productColors = new List<ProductColors>();
-            var con = new SqlConnection(ConStr);
-            // writing sql query  
+            var con = new SqlConnection(ConStr.con);
             SqlCommand cm = new SqlCommand("select * from ProductColors where ProductColors.ProductId = "+id+";", con);
-            // Opening Connection  
             con.Open();
             SqlDataReader sqlDataReader = cm.ExecuteReader();
             while (sqlDataReader.Read())
@@ -86,18 +72,14 @@ namespace StoreApi.DAL.UserSide
             }
 
             con.Close();
-            // Executing the SQL query  
-            //cm.ExecuteNonQuery();
             return productColors;
         }
 
         public List<ImagePath> GetProductImages(int id)
         {
             List<ImagePath> ImagePaths = new List<ImagePath>();
-            var con = new SqlConnection(ConStr);
-            // writing sql query  
+            var con = new SqlConnection(ConStr.con);
             SqlCommand cm = new SqlCommand("select * from ImagesPath where ImagesPath.ProductId = " + id + ";", con);
-            // Opening Connection  
             con.Open();
             SqlDataReader sqlDataReader = cm.ExecuteReader();
             while (sqlDataReader.Read())
@@ -111,19 +93,15 @@ namespace StoreApi.DAL.UserSide
                 ImagePaths.Add(productColor);
             }
 
-            con.Close();
-            // Executing the SQL query  
-            //cm.ExecuteNonQuery();
+            con.Close(); 
             return ImagePaths;
         }
 
         public List<ProductTag> GetProductTags(int id)
         {
             List<ProductTag> ProductTags = new List<ProductTag>();
-            var con = new SqlConnection(ConStr);
-            // writing sql query  
+            var con = new SqlConnection(ConStr.con);
             SqlCommand cm = new SqlCommand("select * from ProductTags where ProductTags.ProductId = " + id + ";", con);
-            // Opening Connection  
             con.Open();
             SqlDataReader sqlDataReader = cm.ExecuteReader();
             while (sqlDataReader.Read())
@@ -136,10 +114,7 @@ namespace StoreApi.DAL.UserSide
                 };
                 ProductTags.Add(productTag);
             }
-
             con.Close();
-            // Executing the SQL query  
-            //cm.ExecuteNonQuery();
             return ProductTags;
         }
     }

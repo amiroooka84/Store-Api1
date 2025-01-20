@@ -1,4 +1,5 @@
-﻿using StoreApi.DAL.UserSide;
+﻿using Microsoft.Data.SqlClient;
+using StoreApi.DAL.UserSide;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
 using System;

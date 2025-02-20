@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using StoreApi.Entity._User;
 using StoreApi.Entity._Product;
@@ -28,7 +23,6 @@ namespace StoreApi.DAL.DB
             optionsBuilder.UseSqlServer(ConStr.con);
             base.OnConfiguring(optionsBuilder);
         }
-
         public DbSet<Product> Products { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }

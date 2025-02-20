@@ -8,9 +8,8 @@ using System.Xml.Linq;
 
 namespace StoreApi.Entity._Image
 {
-    public class ImagePath
+    public class ImagePath : EntityBase
     {
-        public int id { get; set; }
         public int ProductId { get; set; }
         string _Image; 
         public string Image {

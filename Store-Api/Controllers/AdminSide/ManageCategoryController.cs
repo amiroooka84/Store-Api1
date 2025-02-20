@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StoreApi.BLL.Admin;
+using StoreApi.BLL.Features.CategoryFeature.Command.AddCategory;
+using StoreApi.BLL.Features.CategoryFeature.Command.DeleteCategory;
+using StoreApi.BLL.Features.CategoryFeature.Command.UpdateCategory;
+using StoreApi.BLL.Features.CategoryFeature.Query.GetAllCategories;
+using StoreApi.BLL.Features.CategoryFeature.Query.GetByIdCategory;
 using StoreApi.Entity._Category;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageCategory;
 using StoreApi.Models.FieldsRequest.IDField;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,51 +21,50 @@ namespace StoreApi.Controllers.AdminSide
     public class ManageCategoryController : ControllerBase
     {
         private readonly IMapper _mapper;
-        public ManageCategoryController(IMapper mapper)
+        private readonly IMediator _mediator;
+        public ManageCategoryController(IMapper mapper , IMediator mediator)
         {
             _mapper = mapper;
+            _mediator = mediator;
         }
         [HttpPost(Name = "AddCategory")]
-        public IActionResult AddCategory(AddCategoryFieldRequest CategoryFieldRequest)
+        public async Task<IActionResult> AddCategory(AddCategoryFieldRequest CategoryFieldRequest)
         {
-            bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            Category category = new Category();
-            category = _mapper.Map<AddCategoryFieldRequest, Category>(CategoryFieldRequest);
-            Category res = bl_ManageCategory.AddCategory(category);
+            Category category = _mapper.Map<AddCategoryFieldRequest, Category>(CategoryFieldRequest);
+            AddCategoryCommand categoryCommand = new AddCategoryCommand() { Category = category};
+            Category res = await _mediator.Send(categoryCommand);
             return Ok(res);
         }
 
         [HttpPut(Name = "EditCategory")]
-        public IActionResult EditCategory(EditCategoryFieldRequest EditCategoryField)
+        public async Task<IActionResult> EditCategory(EditCategoryFieldRequest EditCategoryField)
         {
-            bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            Category category = new Category();
-            category = _mapper.Map<EditCategoryFieldRequest, Category>(EditCategoryField);
-            Category res = bl_ManageCategory.EditCategory(category);
+            Category category = _mapper.Map<EditCategoryFieldRequest, Category>(EditCategoryField);
+            UpdateCategoryCommand categoryCommand = new UpdateCategoryCommand() { Category = category };
+            Category res = await _mediator.Send(categoryCommand);
             return Ok(res);
+
         }
 
         [HttpDelete(Name = "DeleteCategory")]
-        public IActionResult DeleteCategory(IntIdField id)
+        public async Task<IActionResult> DeleteCategory(IntIdField id)
         {        
-            bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            bool res = bl_ManageCategory.DeleteCategory(id.id);
+            DeleteCategoryCommand categoryCommand = new DeleteCategoryCommand() { id = id.id};
+            Category res = await _mediator.Send(categoryCommand);
             return Ok(res);
         }
 
         [HttpGet(Name = "GetAllCategories")]
-        public IActionResult GetAllCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
-            bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            List<Category> res = bl_ManageCategory.GetAllCategories();
+            IEnumerable<Category> res = await _mediator.Send(new GetAllCategoriesQuery());
             return Ok(res);
         }
 
         [HttpGet(Name = "GetCategoryById")]
-        public IActionResult GetCategoryById(IntIdField id)
+        public async Task<IActionResult> GetCategoryById(IntIdField id)
         {
-            bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            Category res = bl_ManageCategory.GetCategoryById(id.id);
+            Category res = await _mediator.Send(new GetByIdCategoryQuery() { id = id.id});
             return Ok(res);
         }
     }

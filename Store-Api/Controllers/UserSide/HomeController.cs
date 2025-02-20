@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using StoreApi.BLL.Admin;
+using StoreApi.BLL.Features.CategoryFeature.Query.GetAllCategories;
+using StoreApi.BLL.Features.ProductFeature.Query.GetAllProducts;
+using StoreApi.Entity._Category;
+using StoreApi.Entity._Product;
 
 namespace StoreApi.Controllers.UserSide
 {
@@ -8,27 +12,31 @@ namespace StoreApi.Controllers.UserSide
     [ApiController]
     public class HomeController : ControllerBase
     {
-        [HttpGet(Name ="SpecialProducts")]
-        public IActionResult SpecialProducts()
+        private readonly IMediator _mediator;
+
+        public HomeController(IMapper mapper, IMediator mediator)
         {
-            bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
-            var res = bl_ManageProduct.GetAllProducts().OrderByDescending(i => i.Discount).Take(10);
-            return Ok(res);
+            _mediator = mediator;
+        }
+
+        [HttpGet(Name ="SpecialProducts")]
+        public async Task<IActionResult> SpecialProducts()
+        {
+            IEnumerable<Product> res = await _mediator.Send(new GetAllProductsQuery());
+            return Ok(res.OrderByDescending(i => i.Discount).Take(10));
         }
 
         [HttpGet(Name = "NewProducts")]
-        public IActionResult NewProducts()
+        public async Task<IActionResult> NewProducts()
         {
-            bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
-            var res = bl_ManageProduct.GetAllProducts().TakeLast(10);
-            return Ok(res);
+            IEnumerable<Product> res = await _mediator.Send(new GetAllProductsQuery());
+            return Ok(res.TakeLast(10));
         }
 
         [HttpGet(Name = "Categories")]
-        public IActionResult Categories()
+        public async Task<IActionResult> Categories()
         {
-            bl_ManageCategory bl_ManageCategory = new bl_ManageCategory();
-            var res = bl_ManageCategory.GetAllCategories();
+            IEnumerable<Category> res = await _mediator.Send(new GetAllCategoriesQuery());
             return Ok(res);
         }
     }

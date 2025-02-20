@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StoreApi;
+using StoreApi.BLL;
+using StoreApi.DAL;
 using StoreApi.DAL.DB;
 using StoreApi.Entity._Product;
 using StoreApi.Entity._User;
@@ -45,6 +47,8 @@ internal class Program
                               });
         });
 
+        builder.Services.AddBusinessAccessLayerServices(builder.Configuration);
+        builder.Services.AddDataAccessLayerServices(builder.Configuration);
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>

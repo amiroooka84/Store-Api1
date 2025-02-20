@@ -3,25 +3,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using StoreApi.Entity._User;
-using StoreApi.BLL;
-using StoreApi.BLL.Account;
 using StoreApi.Models.Services.SMS;
 using Newtonsoft.Json;
-using System.Text;
 using Microsoft.AspNetCore.DataProtection;
 using StoreApi.Models.FieldsRequest.AccountField;
 using Store_Api.Models.Classes.Account;
-using StoreApi.Models;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using Store_Api.Models.FieldsRequest.AccountField;
-using StoreApi.DAL.dl_Account;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Authentication;
 using StoreApi.Entity._Address;
+using MediatR;
+using StoreApi.BLL.Features.UserAddressFeature.Query.GetUserAddresses;
+using StoreApi.BLL.Features.UserAddressFeature.Command.AddUserAddress;
+using StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress;
 
 
 namespace StoreApi.Controllers
@@ -34,13 +28,14 @@ namespace StoreApi.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _SignInManager;
-        private readonly IDataProtector _protector;
+        private readonly IDataProtector _protector ;
+        private readonly IMediator _mediator;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> SignInManager, IDataProtectionProvider provider)
+        public AccountController(UserManager<User> userManager, SignInManager<User> SignInManager, IDataProtectionProvider provider , IMediator mediator)
         {
             _userManager = userManager;
             _SignInManager = SignInManager;
-
+            _mediator = mediator;
             var serviceCollection = new ServiceCollection();
 
             string sKeysPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Keys");
@@ -51,43 +46,10 @@ namespace StoreApi.Controllers
         }
 
 
-        //[HttpPost(Name = "ExsitUser")]
-
-        //public bool ExsitUser(PhoneNumberFieldRequest phoneNumberFieldRequest)
-        //{
-        //    bl_Account bl_Account = new bl_Account();
-        //    if (bl_Account.ExsitUser(phoneNumberFieldRequest.PhoneNumber))
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-
-        //[HttpPost(Name = "Login")]
-        //public JWT_Fields Login(LoginFieldRequest loginFieldRequest)
-        //{
-        //    bl_Account bl_Account = new bl_Account();
-        //    if (bl_Account.UserVerification(loginFieldRequest.PhoneNumber, loginFieldRequest.Password))
-        //    {
-
-        //        JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage();
-        //        var Result = jWTAuthorizeManage.Authenticate(loginFieldRequest.PhoneNumber, loginFieldRequest.Password);
-        //        if (Result == null)
-        //            return null;
-        //        else
-        //            return Result;
-        //    }
-        //    return null;
-        //}
-
         #region login
         [HttpPost(Name = "PhoneNumber")]
         public IActionResult PhoneNumber(PhoneNumberFieldRequest phoneNumberFieldRequest)
         {
-
-
-
             if (phoneNumberFieldRequest.PhoneNumber?.Length != 11 || !phoneNumberFieldRequest.PhoneNumber.StartsWith("09"))
             {
                 return Ok(false);
@@ -119,8 +81,7 @@ namespace StoreApi.Controllers
                 {
                     return Ok(false);
                 }
-                bl_Account bl_Account = new bl_Account();
-                if (bl_Account.ExsitUser(VerifiFieldRequest.PhoneNumber))
+                if (_userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber) != null)
                 {
                     JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);
                     var Result = await jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
@@ -174,15 +135,14 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "EditProfile")]
         public IActionResult EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
         {
-            bl_Account bl_Account = new bl_Account();
             User user = new User()
             {
                 FirstName = EditProfileFieldRequest.FirstName,
                 LastName = EditProfileFieldRequest.LastName,
                 PhoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()
             };
-            bool res = bl_Account.EditProfile(user);
-            return Ok(res);
+            _userManager.UpdateAsync(user);
+            return Ok(true);
         }
 
 
@@ -190,11 +150,10 @@ namespace StoreApi.Controllers
         [HttpGet(Name = "GetProfile")]
         public async Task<IActionResult> GetProfile()
         {
-            bl_Account bl_Account = new bl_Account();
             string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
             User user = await _userManager.FindByNameAsync(phoneNumber);
-            List<Address> Addresses = bl_Account.GetAddresses(user.Id);
-            return Ok(new { user, Addresses });
+            List<Address> Address = _mediator.Send(new GetUserAddressesQuery() { UserId = user.Id }).Result.ToList();
+            return Ok(new { user, Address });
         }
 
 
@@ -202,7 +161,6 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "AddAddress")]
         public async Task<IActionResult> AddAddress(AddAddressFieldRequest AddAddressFieldRequest)
         {
-            bl_Account bl_Account = new bl_Account();
             string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
             User user = await _userManager.FindByNameAsync(phoneNumber);
             Address address = new Address()
@@ -211,7 +169,7 @@ namespace StoreApi.Controllers
                 PostCode = AddAddressFieldRequest.PostCode,
                 UserId = user.Id
             };
-            Address res = bl_Account.AddAddress(address);
+            Address res = await _mediator.Send(new AddUserAddressCommand() { Address = address});
             return Ok(res);
         }
 
@@ -220,55 +178,9 @@ namespace StoreApi.Controllers
         [HttpDelete(Name = "DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(int id)
         {
-            bl_Account bl_Account = new bl_Account();
-            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
-            User user = await _userManager.FindByNameAsync(phoneNumber);
-            Address address = new Address()
-            {
-                id = id,
-                UserId = user.Id
-            };
-            bool res = bl_Account.DeleteAddress(address);
+            bool res = await _mediator.Send(new DeleteUserAddressCommand() { id = id}) == null ? false : true;
             return Ok(res);
         }
         #endregion
-
-
-
-
-
-
-
-
-        //[HttpPost(Name = "ForgotPassword")]
-        //public IActionResult ForgotPassword(PhoneNumberFieldRequest phoneNumberFieldRequest)
-        //{
-        //    if (_userManager.FindByNameAsync(phoneNumberFieldRequest.PhoneNumber) != null)
-        //    {
-        //        SMS sms = new SMS();
-        //        Random random = new Random();
-        //        string Code = random.Next(1000, 9999).ToString();
-        //        sms.SendConfirmCode(Code, phoneNumberFieldRequest.PhoneNumber);
-        //        DateTime expireTime = DateTime.Now.AddMinutes(5);
-        //        string Serialize = JsonConvert.SerializeObject(new ConfirmCode() { Code = Code, ExpireTime = expireTime });
-        //        var RetCode = _protector.Protect(Serialize);
-        //        return Ok(RetCode);
-        //    }
-        //    return Ok();
-        //}
-
-        //[HttpPost(Name = "ChangePassword")]
-        //public IActionResult ChangePassword(ForgotPasswordFieldRequest forgotPasswordFieldRequest)
-        //{
-        //    var Encrypt = _protector.Unprotect(forgotPasswordFieldRequest.ConfirmCode);
-        //    var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
-        //    if (ConfirmCode.Code == forgotPasswordFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
-        //    {
-        //        var user = _userManager.FindByNameAsync(forgotPasswordFieldRequest.PhoneNumber);
-        //        _userManager.ChangePasswordAsync(user.Result , user.Result.Password , forgotPasswordFieldRequest.Password);
-        //        return Ok(true);
-        //    }
-        //    return Ok(false);
-        //}
     }
 }

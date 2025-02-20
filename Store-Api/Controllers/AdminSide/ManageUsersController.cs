@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using StoreApi.BLL.Admin;
 using StoreApi.Entity._User;
 using StoreApi.Models.FieldsRequest.IDField;
-using System.Reflection;
 using System.Security.Claims;
 
 namespace StoreApi.Controllers.AdminSide

@@ -8,10 +8,9 @@ using StoreApi.Entity._Category;
 
 namespace StoreApi.Entity._Product
 {
-    public class Product
-    {
 
-        public int id { get; set; }
+    public class Product  : EntityBase
+    {
         public string Name { get; set; }
         public string Slack { get; set; }
         public string Brand { get; set; }
@@ -23,13 +22,10 @@ namespace StoreApi.Entity._Product
         public string specs { get; set; }
         public string ImagePath { get; set; }
         public int CategoryId { get; set; }
-
-
     }
 
-    public class ProductColors
+    public class ProductColors: EntityBase
     {
-        public int id { get; set; }
         public string Color { get; set; }
         public string CodeColor { get; set; }
         public int Price { get; set; }
@@ -39,9 +35,8 @@ namespace StoreApi.Entity._Product
 
     }
 
-    public  class ProductTag
+    public  class ProductTag: EntityBase
     {
-        public int id { get; set; }
         public string Tag { get; set; }
         public int ProductId { get; set; }
     }

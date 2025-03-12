@@ -81,7 +81,7 @@ namespace StoreApi.Controllers
                 {
                     return Ok(false);
                 }
-                if (_userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber) != null)
+                if (_userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber).Result != null)
                 {
                     JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);
                     var Result = await jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
@@ -98,6 +98,7 @@ namespace StoreApi.Controllers
                         PhoneNumber = VerifiFieldRequest.PhoneNumber,
                         PhoneNumberConfirmed = true,
                     });
+
                     if (VerifiFieldRequest.PhoneNumber == "09224982760" || VerifiFieldRequest.PhoneNumber == "09187012481" || VerifiFieldRequest.PhoneNumber == "09187012481")
                     {
                         User user = new User();

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreApi.DAL.DB;
 
@@ -11,9 +12,10 @@ using StoreApi.DAL.DB;
 namespace StoreApi.DAL.Migrations
 {
     [DbContext(typeof(db))]
-    partial class dbModelSnapshot : ModelSnapshot
+    [Migration("20250312032728_l")]
+    partial class l
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,6 +157,28 @@ namespace StoreApi.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("StoreApi.Entity._Address.Address", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+
+                    b.Property<string>("PostCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("_Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("StoreApi.Entity._Basket.Basket", b =>
                 {
                     b.Property<int>("id")
@@ -194,20 +218,37 @@ namespace StoreApi.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("_Categoryid")
+                    b.HasKey("id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("StoreApi.Entity._Image.ImagePath", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
 
-                    b.HasIndex("_Categoryid");
-
-                    b.ToTable("Categories");
+                    b.ToTable("ImagesPath");
                 });
 
             modelBuilder.Entity("StoreApi.Entity._Order.Order", b =>
@@ -251,12 +292,10 @@ namespace StoreApi.DAL.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -287,15 +326,13 @@ namespace StoreApi.DAL.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Orderid")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Orderid");
 
                     b.ToTable("ProductOrders");
                 });
@@ -308,14 +345,20 @@ namespace StoreApi.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
+                    b.Property<string>("Brand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Code")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Discount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Discription")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -332,15 +375,10 @@ namespace StoreApi.DAL.Migrations
                     b.Property<string>("Slack")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Specifications")
+                    b.Property<string>("specs")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("_Categoryid")
-                        .HasColumnType("int");
-
                     b.HasKey("id");
-
-                    b.HasIndex("_Categoryid");
 
                     b.ToTable("Products");
                 });
@@ -359,14 +397,40 @@ namespace StoreApi.DAL.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Productid")
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
 
-                    b.HasIndex("Productid");
-
                     b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("StoreApi.Entity._Product.ProductTag", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ProductTags");
                 });
 
             modelBuilder.Entity("StoreApi.Entity._User.User", b =>
@@ -513,54 +577,6 @@ namespace StoreApi.DAL.Migrations
                     b.Navigation("ProductColors");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Category.Category", b =>
-                {
-                    b.HasOne("StoreApi.Entity._Category.Category", "_Category")
-                        .WithMany()
-                        .HasForeignKey("_Categoryid");
-
-                    b.Navigation("_Category");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Order.Order", b =>
-                {
-                    b.HasOne("StoreApi.Entity._User.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Order.ProductOrder", b =>
-                {
-                    b.HasOne("StoreApi.Entity._Order.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("Orderid");
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Product.Product", b =>
-                {
-                    b.HasOne("StoreApi.Entity._Category.Category", "_Category")
-                        .WithMany()
-                        .HasForeignKey("_Categoryid");
-
-                    b.Navigation("_Category");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Product.ProductColors", b =>
-                {
-                    b.HasOne("StoreApi.Entity._Product.Product", null)
-                        .WithMany("Colors")
-                        .HasForeignKey("Productid");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Product.Product", b =>
-                {
-                    b.Navigation("Colors");
                 });
 #pragma warning restore 612, 618
         }

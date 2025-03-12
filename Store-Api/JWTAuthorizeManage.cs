@@ -28,7 +28,8 @@ namespace StoreApi
             string RoleUser = "User";
             User user = new User();
             user = await _userManager.FindByNameAsync(PhoneNumber) ;
-            var isRole = _userManager.GetClaimsAsync(user).Result.First().ToString();
+            var result = await _userManager.GetClaimsAsync(user);
+            var isRole = result.First().ToString();
             if (isRole  == "AdminNumber: 1")
             {
                 RoleUser = "Admin";

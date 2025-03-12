@@ -63,9 +63,17 @@ namespace StoreApi.DAL.Repository.RepositoryBase
 
         public T Update(T entity)
         {
-            _db.Entry(entity).State = EntityState.Modified;
-            _db.SaveChanges();
-            return entity;
+            try
+            {
+                _db.Entry(entity).State = EntityState.Modified;
+                _db.SaveChanges();
+                return entity;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+
         }
     }
 }

@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using StoreApi.DAL.DB;
 using StoreApi.DAL.Repository.CategoryRepository;
 using StoreApi.DAL.Repository.ImagePathRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
+using StoreApi.DAL.Repository.OrderRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
 using StoreApi.DAL.Repository.ProductTagRepository;
 using StoreApi.DAL.Repository.RepositoryBase;
@@ -18,11 +20,6 @@ namespace StoreApi.DAL
     {
         public static IServiceCollection AddDataAccessLayerServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<db>(options =>
-            {
-                options.UseSqlServer(ConStr.con);
-            });
-
             services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductColorsRepository, ProductColorsRepository>();
@@ -30,6 +27,8 @@ namespace StoreApi.DAL
             services.AddScoped<IImagePathRepository,ImagePathRepository>();
             services.AddScoped<ICategoryRepository,CategoryRepository>();
             services.AddScoped<IUserAddressRepository,UserAddressRepository>();
+            services.AddScoped<IOrderRepository,OrderRepository>();
+            services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
 
             return services;
         }

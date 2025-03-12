@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace StoreApi.Entity._Order
 {
-    public class Order
+    public class Order :EntityBase
     {
-        public int id { get; set; }
-
-        public User User { get; set; }
+        public string User { get; set; }
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
-
         public string Date { get; set; }
         public int Code { get; set; }
         public int Price { get; set; }
@@ -32,10 +29,9 @@ namespace StoreApi.Entity._Order
         public bool IsFinally { get; set; }
     }
 
-    public class ProductOrder
+    public class ProductOrder : EntityBase
     {
-        public int id { get; set; }
-        public Order Order{ get; set; }
+        public int OrderId{ get; set; }
         public string Name { get; set; }
         public int Code { get; set; }
         public int Price { get; set; }

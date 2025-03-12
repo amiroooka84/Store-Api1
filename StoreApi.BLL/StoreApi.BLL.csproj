@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MD.PersianDateTime.Standard" Version="2.5.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Store.DAL\StoreApi.DAL.csproj" />
     <ProjectReference Include="..\Store.Entity\StoreApi.Entity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\OrderFeature\Query\" />
   </ItemGroup>
 
 </Project>

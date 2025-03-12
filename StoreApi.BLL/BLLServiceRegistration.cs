@@ -18,7 +18,6 @@ namespace StoreApi.BLL
         public static IServiceCollection AddBusinessAccessLayerServices(this IServiceCollection services , IConfiguration configuration)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddDataAccessLayerServices(configuration);
             return services;
         }
     }

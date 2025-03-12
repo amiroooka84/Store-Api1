@@ -290,12 +290,10 @@ namespace StoreApi.DAL.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -326,15 +324,13 @@ namespace StoreApi.DAL.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Orderid")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Orderid");
 
                     b.ToTable("ProductOrders");
                 });
@@ -579,24 +575,6 @@ namespace StoreApi.DAL.Migrations
                     b.Navigation("ProductColors");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Order.Order", b =>
-                {
-                    b.HasOne("StoreApi.Entity._User.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StoreApi.Entity._Order.ProductOrder", b =>
-                {
-                    b.HasOne("StoreApi.Entity._Order.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("Orderid");
-
-                    b.Navigation("Order");
                 });
 #pragma warning restore 612, 618
         }

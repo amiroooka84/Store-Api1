@@ -26,15 +26,11 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddDbContext<db>(options =>
+        {
+            options.UseSqlServer(ConStr.con);
+        }, ServiceLifetime.Transient);
 
-        // Add services to the container.
-        //شناختن دیتا بیس به پروژه
-        builder.Services.AddDbContext<db>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("con")));
-
-        //builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("con"),
-        //    optionsBuilder =>
-        //    optionsBuilder.MigrationsAssembly("dal")
-        //));
 
         var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         builder.Services.AddCors(options =>
@@ -106,9 +102,17 @@ internal class Program
 
         var app = builder.Build();
 
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    var dbcon = scope.ServiceProvider.GetRequiredService<db>();
+        //    //Same as the question
+        //    dbcon.Database.Migrate();
+        //}
+
+
         //if (app.Environment.IsDevelopment())
         //{
-            app.UseDeveloperExceptionPage();
+        app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Store-Api"); });
         //}

@@ -64,11 +64,6 @@ namespace StoreApi.Controllers.AdminSide
         [HttpGet(Name = "GetProductById")]
         public async Task<IActionResult> GetProductById(IntIdField id)
         {
-            //bl_ManageProduct bl_ManageProduct = new bl_ManageProduct();
-            //Product Product = _productFeature.GetById(id.id);
-            //List<ProductColors> colors = bl_ManageProduct.GetProductColors(id.id);
-            //List<ProductTag> tags = bl_ManageProduct.GetProductTags(id.id);
-            //List<ImagePath> images = bl_ManageProduct.GetProductImages(id.id);
             GetByIdProductViewModel res = await _mediator.Send(new GetByIdProductQuery() { id = id.id});
             return Ok(res);
 

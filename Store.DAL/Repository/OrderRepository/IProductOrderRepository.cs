@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace StoreApi.DAL.Repository.OrderRepository
 {
-    public interface IProductOrderRepository: IRepository<ProductOrder>
+    public interface IProductOrderRepository : IRepository<ProductOrder>
     {
-
+        public IEnumerable<ProductOrder> GetProductsByOrderId(int orderId);
     }
 }

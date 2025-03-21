@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Store.Entity\StoreApi.Entity.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\OrderFeature\Query\" />
-  </ItemGroup>
-
 </Project>

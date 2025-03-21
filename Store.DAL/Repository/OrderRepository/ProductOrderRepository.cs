@@ -1,6 +1,8 @@
-﻿using StoreApi.DAL.DB;
+﻿using Dapper;
+using StoreApi.DAL.DB;
 using StoreApi.DAL.Repository.RepositoryBase;
 using StoreApi.Entity._Order;
+using StoreApi.Entity._User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,14 @@ namespace StoreApi.DAL.Repository.OrderRepository
     {
         public ProductOrderRepository(db db) : base(db)
         {
+        }
+
+        public IEnumerable<ProductOrder> GetProductsByOrderId(int orderId)
+        {
+            _connection.Open();
+            var res = _connection.Query<ProductOrder>("select * from ProductOrders where OrderId = @ID", new { ID = orderId });
+            _connection.Close();
+            return res;
         }
     }
 }

@@ -12,6 +12,6 @@ namespace StoreApi.Entity._User
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Password { get; set; }
-
+        public string ImagePath { get; set; }
     }
 }

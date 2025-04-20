@@ -19,7 +19,6 @@ namespace StoreApi.DAL.DB
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             optionsBuilder.UseSqlServer(ConStr.con);
             base.OnConfiguring(optionsBuilder);
         }

@@ -55,7 +55,6 @@ namespace StoreApi.Controllers.UserSide
             return Ok(res);
         }
 
-        [AllowAnonymous]
         [HttpPost(Name = "VerifyOrder")]
         public async Task<IActionResult> VerifyOrder(IntIdField OrderId)
         {

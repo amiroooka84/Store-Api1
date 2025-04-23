@@ -16,6 +16,8 @@ using MediatR;
 using StoreApi.BLL.Features.UserAddressFeature.Query.GetUserAddresses;
 using StoreApi.BLL.Features.UserAddressFeature.Command.AddUserAddress;
 using StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress;
+using StoreApi.Models.FieldsRequest.IDField;
+using StoreApi.Entity._Image;
 
 
 namespace StoreApi.Controllers
@@ -136,17 +138,13 @@ namespace StoreApi.Controllers
         [HttpPost(Name = "EditProfile")]
         public async Task<IActionResult> EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
         {
-            User user = new User()
-            {
-                FirstName = EditProfileFieldRequest.FirstName,
-                LastName = EditProfileFieldRequest.LastName,
-                PhoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()
-            };
+            User user = new User();
             user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
             user.FirstName = EditProfileFieldRequest.FirstName;
             user.LastName = EditProfileFieldRequest.LastName;
+            user.Email = EditProfileFieldRequest.Email;
 
-           var result = _userManager.UpdateAsync(user).Result.Succeeded;
+            var result = _userManager.UpdateAsync(user).Result.Succeeded;
             return Ok(result);
         }
 
@@ -181,9 +179,31 @@ namespace StoreApi.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete(Name = "DeleteAddress")]
-        public async Task<IActionResult> DeleteAddress(int id)
+        public async Task<IActionResult> DeleteAddress(IntIdField id)
         {
-            bool res = await _mediator.Send(new DeleteUserAddressCommand() { id = id}) == null ? false : true;
+            bool res = await _mediator.Send(new DeleteUserAddressCommand() { id = id.id }) == null ? false : true;
+            return Ok(res);
+        }
+
+
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpDelete(Name = "DeleteAddress")]
+        public async Task<IActionResult> AddUserImage(string imagePath)
+        {
+            User user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
+            user.ImagePath = imagePath;
+            var res = _userManager.UpdateAsync(user).Result.Succeeded;
+            return Ok(res);
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpDelete(Name = "DeleteAddress")]
+        public async Task<IActionResult> RemoveUserImage()
+        {
+            User user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
+            user.ImagePath = null;
+            var res = _userManager.UpdateAsync(user).Result.Succeeded;
             return Ok(res);
         }
         #endregion

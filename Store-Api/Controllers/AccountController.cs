@@ -134,7 +134,7 @@ namespace StoreApi.Controllers
         #region Profile
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost(Name = "EditProfile")]
-        public IActionResult EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
+        public async Task<IActionResult> EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
         {
             User user = new User()
             {
@@ -142,8 +142,12 @@ namespace StoreApi.Controllers
                 LastName = EditProfileFieldRequest.LastName,
                 PhoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()
             };
-            _userManager.UpdateAsync(user);
-            return Ok(true);
+            user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
+            user.FirstName = EditProfileFieldRequest.FirstName;
+            user.LastName = EditProfileFieldRequest.LastName;
+
+           var result = _userManager.UpdateAsync(user).Result.Succeeded;
+            return Ok(result);
         }
 
 

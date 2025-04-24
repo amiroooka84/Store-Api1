@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress
 {
-    public class DeleteUserAddressQueryCommand : IRequestHandler<DeleteUserAddressCommand, Address>
+    public class DeleteUserAddressCommandHandler : IRequestHandler<DeleteUserAddressCommand, Address>
     {
         private readonly IUserAddressRepository _userAddressRepository;
 
-        public DeleteUserAddressQueryCommand(IUserAddressRepository userAddressRepository)
+        public DeleteUserAddressCommandHandler(IUserAddressRepository userAddressRepository)
         {
             _userAddressRepository = userAddressRepository;
         }

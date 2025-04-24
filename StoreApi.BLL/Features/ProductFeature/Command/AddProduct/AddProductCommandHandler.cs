@@ -30,7 +30,6 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
         }
         public Task<Product> Handle(AddProductCommand request, CancellationToken cancellationToken)
         {
-            var res = _productRepository.Create(request.Product);
             foreach (var color in request.Colors)
             {
                 color.ProductId = request.Product.id;
@@ -44,6 +43,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
             {
                 _productTagRepository.Create(new ProductTag() { Tag = tag, ProductId = request.Product.id });
             }
+            var res = _productRepository.Create(request.Product);
             return Task.FromResult(res);
         }
     }

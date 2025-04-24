@@ -18,6 +18,7 @@ using StoreApi.BLL.Features.UserAddressFeature.Command.AddUserAddress;
 using StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress;
 using StoreApi.Models.FieldsRequest.IDField;
 using StoreApi.Entity._Image;
+using StoreApi.BLL.Features.UserAddressFeature.Command.UpdateUserAddress;
 
 
 namespace StoreApi.Controllers
@@ -140,10 +141,11 @@ namespace StoreApi.Controllers
         {
             User user = new User();
             user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
-            user.FirstName = EditProfileFieldRequest.FirstName;
-            user.LastName = EditProfileFieldRequest.LastName;
-            user.Email = EditProfileFieldRequest.Email;
 
+            if (EditProfileFieldRequest.FirstName != null) { user.FirstName = EditProfileFieldRequest.FirstName; }
+            if (EditProfileFieldRequest.LastName != null) { user.LastName = EditProfileFieldRequest.LastName; }
+            if (EditProfileFieldRequest.Email != null) { user.Email = EditProfileFieldRequest.Email; }
+            if (EditProfileFieldRequest.ImagePaht != null) { user.ImagePath = EditProfileFieldRequest.ImagePaht; }
             var result = _userManager.UpdateAsync(user).Result.Succeeded;
             return Ok(result);
         }
@@ -185,27 +187,14 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
-
-
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpDelete(Name = "AddUserImage")]
-        public async Task<IActionResult> AddUserImage(string imagePath)
+        [HttpDelete(Name = "EditAddress")]
+        public async Task<IActionResult> EditAddress(EditAddressFieldRequest editAddressField)
         {
-            User user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
-            user.ImagePath = imagePath;
-            var res = _userManager.UpdateAsync(user).Result.Succeeded;
+            Address res = await _mediator.Send(new UpdateUserAddressCommand() { id = editAddressField.id , Address = editAddressField.Address , PostCode = editAddressField.PostCode });
             return Ok(res);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpDelete(Name = "RemoveUserImage")]
-        public async Task<IActionResult> RemoveUserImage()
-        {
-            User user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
-            user.ImagePath = null;
-            var res = _userManager.UpdateAsync(user).Result.Succeeded;
-            return Ok(res);
-        }
         #endregion
     }
 }

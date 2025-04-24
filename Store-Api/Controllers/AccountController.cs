@@ -188,7 +188,7 @@ namespace StoreApi.Controllers
 
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpDelete(Name = "DeleteAddress")]
+        [HttpDelete(Name = "AddUserImage")]
         public async Task<IActionResult> AddUserImage(string imagePath)
         {
             User user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());
@@ -198,7 +198,7 @@ namespace StoreApi.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpDelete(Name = "DeleteAddress")]
+        [HttpDelete(Name = "RemoveUserImage")]
         public async Task<IActionResult> RemoveUserImage()
         {
             User user = await _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First());

@@ -46,6 +46,7 @@ internal class Program
         builder.Services.AddBusinessAccessLayerServices(builder.Configuration);
         builder.Services.AddDataAccessLayerServices(builder.Configuration);
         builder.Services.AddControllers();
+        builder.Services.AddMemoryCache();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
                         {

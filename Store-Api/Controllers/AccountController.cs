@@ -19,6 +19,7 @@ using StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress;
 using StoreApi.Models.FieldsRequest.IDField;
 using StoreApi.Entity._Image;
 using StoreApi.BLL.Features.UserAddressFeature.Command.UpdateUserAddress;
+using Microsoft.Extensions.Caching.Memory;
 
 
 namespace StoreApi.Controllers
@@ -33,12 +34,14 @@ namespace StoreApi.Controllers
         private readonly SignInManager<User> _SignInManager;
         private readonly IDataProtector _protector ;
         private readonly IMediator _mediator;
+        private readonly IMemoryCache _memoryCache;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> SignInManager, IDataProtectionProvider provider , IMediator mediator)
+        public AccountController(UserManager<User> userManager, SignInManager<User> SignInManager, IDataProtectionProvider provider , IMediator mediator , IMemoryCache memoryCache)
         {
             _userManager = userManager;
             _SignInManager = SignInManager;
             _mediator = mediator;
+            _memoryCache = memoryCache;
             var serviceCollection = new ServiceCollection();
 
             string sKeysPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Keys");
@@ -62,24 +65,24 @@ namespace StoreApi.Controllers
             string Code = random.Next(1000, 9999).ToString();
             sms.SendConfirmCode(Code, phoneNumberFieldRequest.PhoneNumber);
             DateTime expireTime = DateTime.Now.AddMinutes(5);
-            string Serialize = JsonConvert.SerializeObject(new ConfirmCode() { PhoneNumber = phoneNumberFieldRequest.PhoneNumber, Code = Code, ExpireTime = expireTime });
-            var hashCode = _protector.Protect(Serialize);
-            return Ok(new { hashCode, Code });
+            _memoryCache.Remove("ConfirmCode");
+            _memoryCache.Set("ConfirmCode", new ConfirmCode() { PhoneNumber = phoneNumberFieldRequest.PhoneNumber, Code = Code, ExpireTime = expireTime } , TimeSpan.FromMinutes(5));
+            return Ok(new { Code });
         }
 
 
         [HttpPost(Name = "VerifiCode")]
         public async Task<IActionResult> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
-
-            var Encrypt = "";
-
-            Encrypt = _protector.Unprotect(VerifiFieldRequest.ConfirmCode);
-
-            var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(Encrypt);
+            var ConfirmCode = _memoryCache.Get<ConfirmCode>("ConfirmCode");
+            if (ConfirmCode == null)
+            {
+                return Ok(false);
+            }
+            _memoryCache.Remove("ConfirmCode");
+            //var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(_memoryCache.Get("ConfirmCode"));
             if (ConfirmCode.PhoneNumber == VerifiFieldRequest.PhoneNumber && ConfirmCode.Code == VerifiFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
             {
-
                 if (VerifiFieldRequest.PhoneNumber?.Length != 11 || !VerifiFieldRequest.PhoneNumber.StartsWith("09"))
                 {
                     return Ok(false);
@@ -145,7 +148,7 @@ namespace StoreApi.Controllers
             if (EditProfileFieldRequest.FirstName != null) { user.FirstName = EditProfileFieldRequest.FirstName; }
             if (EditProfileFieldRequest.LastName != null) { user.LastName = EditProfileFieldRequest.LastName; }
             if (EditProfileFieldRequest.Email != null) { user.Email = EditProfileFieldRequest.Email; }
-            if (EditProfileFieldRequest.ImagePaht != null) { user.ImagePath = EditProfileFieldRequest.ImagePaht; }
+            if (EditProfileFieldRequest.ImagePath != null) { user.ImagePath = EditProfileFieldRequest.ImagePath; }
             var result = _userManager.UpdateAsync(user).Result.Succeeded;
             return Ok(result);
         }

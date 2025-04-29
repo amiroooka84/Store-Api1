@@ -190,7 +190,7 @@ namespace StoreApi.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpDelete(Name = "EditAddress")]
+        [HttpPut(Name = "EditAddress")]
         public async Task<IActionResult> EditAddress(EditAddressFieldRequest editAddressField)
         {
             Address res = await _mediator.Send(new UpdateUserAddressCommand() { id = editAddressField.id , Address = editAddressField.Address , PostCode = editAddressField.PostCode });

@@ -126,7 +126,6 @@ namespace StoreApi.Controllers
                         else
                             return Ok(Result);
                     }
-
                     return Ok(false);
                 }
             }

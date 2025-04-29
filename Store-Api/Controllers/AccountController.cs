@@ -193,7 +193,16 @@ namespace StoreApi.Controllers
         [HttpPut(Name = "EditAddress")]
         public async Task<IActionResult> EditAddress(EditAddressFieldRequest editAddressField)
         {
-            Address res = await _mediator.Send(new UpdateUserAddressCommand() { id = editAddressField.id , Address = editAddressField.Address , PostCode = editAddressField.PostCode });
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            Address address = new Address()
+            {
+                id = editAddressField.id,
+                PostCode = editAddressField.PostCode,
+                UserId = user.Id,
+                _Address = editAddressField.Address
+            }; 
+            Address res = await _mediator.Send(new UpdateUserAddressCommand() { Address = address });
             return Ok(res);
         }
 

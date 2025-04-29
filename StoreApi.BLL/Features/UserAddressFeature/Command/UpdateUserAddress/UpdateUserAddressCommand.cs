@@ -10,8 +10,7 @@ namespace StoreApi.BLL.Features.UserAddressFeature.Command.UpdateUserAddress
 {
     public class UpdateUserAddressCommand : IRequest<Address>
     {
-        public int id { get; set; }
-        public string? Address { get; set; }
-        public string? PostCode { get; set; }
+        public Address Address { get; set; } 
+
     }
 }

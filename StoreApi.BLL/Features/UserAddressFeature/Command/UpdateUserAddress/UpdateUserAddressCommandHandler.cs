@@ -20,13 +20,7 @@ namespace StoreApi.BLL.Features.UserAddressFeature.Command.UpdateUserAddress
 
         public Task<Address> Handle(UpdateUserAddressCommand request, CancellationToken cancellationToken)
         {
-            Address address = new Address()
-            {
-                id = request.id,
-                PostCode = request.PostCode,
-                _Address = request.Address,
-            };
-            var res = _userAddressRepository.Update(address);
+            var res = _userAddressRepository.Update(request.Address);
             return Task.FromResult(res);
         }
     }

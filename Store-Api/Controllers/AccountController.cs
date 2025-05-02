@@ -206,6 +206,20 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPut(Name = "VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail(string email)
+        {
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            if (email == user.Email)
+            {
+                user.EmailConfirmed = true;
+                var res = _userManager.UpdateAsync(user).Result.Succeeded;
+                return Ok(res);
+            }
+            return BadRequest();
+        }
         #endregion
     }
 }

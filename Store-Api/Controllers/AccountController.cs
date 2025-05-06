@@ -146,7 +146,7 @@ namespace StoreApi.Controllers
 
             if (EditProfileFieldRequest.FirstName != null) { user.FirstName = EditProfileFieldRequest.FirstName; }
             if (EditProfileFieldRequest.LastName != null) { user.LastName = EditProfileFieldRequest.LastName; }
-            if (EditProfileFieldRequest.Email != null) { user.Email = EditProfileFieldRequest.Email; }
+            if (EditProfileFieldRequest.Email != null) { user.Email = EditProfileFieldRequest.Email; user.EmailConfirmed = false; }
             if (EditProfileFieldRequest.ImagePath != null) { user.ImagePath = EditProfileFieldRequest.ImagePath; }
             var result = _userManager.UpdateAsync(user).Result.Succeeded;
             return Ok(result);
@@ -208,11 +208,11 @@ namespace StoreApi.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut(Name = "VerifyEmail")]
-        public async Task<IActionResult> VerifyEmail(string email)
+        public async Task<IActionResult> VerifyEmail(VerifyEmailFieldRequest email)
         {
             string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
             User user = await _userManager.FindByNameAsync(phoneNumber);
-            if (email == user.Email)
+            if (email.Email == user.Email)
             {
                 user.EmailConfirmed = true;
                 var res = _userManager.UpdateAsync(user).Result.Succeeded;

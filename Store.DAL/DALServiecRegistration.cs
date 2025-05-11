@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using StoreApi.DAL.DB;
 using StoreApi.DAL.Repository.CategoryRepository;
 using StoreApi.DAL.Repository.ImagePathRepository;
+using StoreApi.DAL.Repository.LikeRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
 using StoreApi.DAL.Repository.OrderRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
@@ -29,6 +30,7 @@ namespace StoreApi.DAL
             services.AddScoped<IUserAddressRepository,UserAddressRepository>();
             services.AddScoped<IOrderRepository,OrderRepository>();
             services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
+            services.AddScoped<ILikeRepository, LikeRepository>();
 
             return services;
         }

@@ -13,6 +13,7 @@ using StoreApi.BLL.Features.ProductFeature.Query.GetAllProducts;
 using StoreApi.Entity._Order;
 using StoreApi.Entity._Product;
 using StoreApi.Entity._User;
+using StoreApi.Models.FieldsRequest.AccountField;
 using StoreApi.Models.FieldsRequest.IDField;
 using StoreApi.Models.FieldsRequest.UserSide.Order;
 
@@ -56,13 +57,13 @@ namespace StoreApi.Controllers.UserSide
         }
 
         [HttpPost(Name = "VerifyOrder")]
-        public async Task<IActionResult> VerifyOrder(IntIdField OrderId)
+        public async Task<IActionResult> VerifyOrder(VerifyOrderFieldRequest verifyOrder)
         {
-            bool res = await _mediator.Send(new VerifyOrderCommand() { OrderId = OrderId.id});
+            bool res = await _mediator.Send(new VerifyOrderCommand() { OrderId = verifyOrder.id});
             return Ok(res);
         }
 
-        [HttpPost(Name = "GetOrders")]
+        [HttpGet(Name = "GetOrders")]
         public IActionResult GetOrders()
         {
             string userId = _userManager.FindByNameAsync(this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First()).Result.Id;

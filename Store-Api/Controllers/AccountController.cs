@@ -20,13 +20,18 @@ using StoreApi.Models.FieldsRequest.IDField;
 using StoreApi.Entity._Image;
 using StoreApi.BLL.Features.UserAddressFeature.Command.UpdateUserAddress;
 using Microsoft.Extensions.Caching.Memory;
+using System.Net;
+using StoreApi.BLL.Features.LikeFeature.Command.AddLike;
+using StoreApi.Entity._Like;
+using StoreApi.BLL.Features.LikeFeature.Command.DisLike;
+using StoreApi.BLL.Features.LikeFeature.Command.GetLike;
 
 
 namespace StoreApi.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-
+    [Authorize(AuthenticationSchemes = "Bearer")]
 
     public class AccountController : ControllerBase
     {
@@ -53,6 +58,7 @@ namespace StoreApi.Controllers
 
 
         #region login
+        [AllowAnonymous]
         [HttpPost(Name = "PhoneNumber")]
         public IActionResult PhoneNumber(PhoneNumberFieldRequest phoneNumberFieldRequest)
         {
@@ -71,6 +77,7 @@ namespace StoreApi.Controllers
         }
 
 
+        [AllowAnonymous]
         [HttpPost(Name = "VerifiCode")]
         public async Task<IActionResult> VerifiCode(VerifiFieldRequest VerifiFieldRequest)
         {
@@ -137,7 +144,6 @@ namespace StoreApi.Controllers
         #endregion
 
         #region Profile
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost(Name = "EditProfile")]
         public async Task<IActionResult> EditProfile(EditProfileFieldRequest EditProfileFieldRequest)
         {
@@ -153,7 +159,6 @@ namespace StoreApi.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet(Name = "GetProfile")]
         public async Task<IActionResult> GetProfile()
         {
@@ -164,7 +169,6 @@ namespace StoreApi.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost(Name = "AddAddress")]
         public async Task<IActionResult> AddAddress(AddAddressFieldRequest AddAddressFieldRequest)
         {
@@ -181,7 +185,6 @@ namespace StoreApi.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete(Name = "DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(IntIdField id)
         {
@@ -189,7 +192,6 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut(Name = "EditAddress")]
         public async Task<IActionResult> EditAddress(EditAddressFieldRequest editAddressField)
         {
@@ -206,7 +208,6 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut(Name = "VerifyEmail")]
         public async Task<IActionResult> VerifyEmail(VerifyEmailFieldRequest email)
         {
@@ -219,6 +220,53 @@ namespace StoreApi.Controllers
                 return Ok(res);
             }
             return BadRequest();
+        }
+
+
+
+        [HttpPost(Name = "Like")]
+        public async Task<IActionResult> Like(IntIdField productId)
+        {
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            Like like = new Like()
+            {
+                UserId = user.Id,
+                ProductId = productId.id,
+            };
+            bool res =  _mediator.Send(new LikeCommand() { Like = like}).IsCompletedSuccessfully;
+
+            return Ok(res);
+        }
+
+        [HttpDelete(Name = "DisLike")]
+        public async Task<IActionResult> DisLike(IntIdField productId)
+        {
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            Like like = new Like()
+            {
+                UserId = user.Id,
+                ProductId = productId.id,
+            };
+            bool res = _mediator.Send(new DisLikeCommand() { Like = like }).IsCompletedSuccessfully;
+
+            return Ok(res);
+        }
+
+        [HttpGet(Name = "GetLike")]
+        public async Task<IActionResult> GetLike(IntIdField productId)
+        {
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            Like like = new Like()
+            {
+                UserId = user.Id,
+                ProductId = productId.id,
+            };
+            Like res = await _mediator.Send(new GetLikeCommand() { Like = like });
+           
+            return Ok(res != null ? true : false);
         }
         #endregion
     }

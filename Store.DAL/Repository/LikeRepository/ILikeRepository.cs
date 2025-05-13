@@ -12,5 +12,6 @@ namespace StoreApi.DAL.Repository.LikeRepository
     {
         Like DeleteByProductIdAndUserId(Like value);
         Like GetByProductIdAndUserId(Like value);
+        IEnumerable<Like> GetUserLikes(string UserId);
     }
 }

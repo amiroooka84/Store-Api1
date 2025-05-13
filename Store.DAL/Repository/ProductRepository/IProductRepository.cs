@@ -10,6 +10,6 @@ namespace StoreApi.DAL.Repository.ManagementRepository
 {
     public interface IProductRepository : IRepository<Product>
     {
-
+        
     }
 }

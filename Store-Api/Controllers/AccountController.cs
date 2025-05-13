@@ -24,7 +24,8 @@ using System.Net;
 using StoreApi.BLL.Features.LikeFeature.Command.AddLike;
 using StoreApi.Entity._Like;
 using StoreApi.BLL.Features.LikeFeature.Command.DisLike;
-using StoreApi.BLL.Features.LikeFeature.Command.GetLike;
+using StoreApi.BLL.Features.LikeFeature.Query.GetLike;
+using StoreApi.Entity._Product;
 
 
 namespace StoreApi.Controllers
@@ -254,19 +255,15 @@ namespace StoreApi.Controllers
             return Ok(res);
         }
 
-        [HttpGet(Name = "GetLike")]
-        public async Task<IActionResult> GetLike(IntIdField productId)
+        [HttpGet(Name = "GetLikedProducts")]
+        public async Task<IActionResult> GetLikedProducts()
         {
             string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
             User user = await _userManager.FindByNameAsync(phoneNumber);
-            Like like = new Like()
-            {
-                UserId = user.Id,
-                ProductId = productId.id,
-            };
-            Like res = await _mediator.Send(new GetLikeCommand() { Like = like });
+
+            var res = await _mediator.Send(new GetLikedProductsQuery() { UserId = user.Id });
            
-            return Ok(res != null ? true : false);
+            return Ok(res);
         }
         #endregion
     }

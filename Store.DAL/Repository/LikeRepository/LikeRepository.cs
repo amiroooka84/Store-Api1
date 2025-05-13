@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Newtonsoft.Json.Linq;
 using StoreApi.DAL.DB;
 using StoreApi.DAL.Repository.RepositoryBase;
 using StoreApi.Entity._Like;
@@ -29,6 +30,14 @@ namespace StoreApi.DAL.Repository.LikeRepository
         {
             _connection.Open();
             var res = _connection.QueryFirstOrDefault<Like>("select * from Likes where UserId = @USERID and ProductId = @PRODUCTID ", new { USERID = value.UserId, PRODUCTID = value.ProductId });
+            _connection.Close();
+            return res;
+        }
+
+        public IEnumerable<Like> GetUserLikes(string UserId)
+        {
+            _connection.Open();
+            var res = _connection.Query<Like>("select * from Likes where UserId = @USERID", new { USERID = UserId });
             _connection.Close();
             return res;
         }

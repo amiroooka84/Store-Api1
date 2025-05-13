@@ -15,5 +15,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Query.GetByIdProduct
         public IEnumerable<ProductColors> Colors { get; set; }
         public IEnumerable<ProductTag> Tags { get; set; }
         public IEnumerable<ImagePath> ImagesPath { get; set; }
+        public bool IsLiked { get; set; }
+
     }
 }

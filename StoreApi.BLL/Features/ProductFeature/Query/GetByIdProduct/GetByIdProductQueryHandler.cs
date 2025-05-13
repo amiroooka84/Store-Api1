@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using StoreApi.DAL.Repository.ImagePathRepository;
+using StoreApi.DAL.Repository.LikeRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
 using StoreApi.DAL.Repository.ProductTagRepository;
@@ -19,7 +20,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Query.GetByIdProduct
         private readonly IProductTagRepository _productTagRepository;
         private readonly IImagePathRepository _imagePathRepository;
 
-        public GetByIdProductQueryHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository)
+        public GetByIdProductQueryHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository, ILikeRepository likeRepository)
         {
             _productRepository = productRepository;
             _productColorsRepository = productColorsRepository;

@@ -24,5 +24,13 @@ namespace StoreApi.DAL.Repository.LikeRepository
             _connection.Close();
             return res;
         }
+
+        public Like GetByProductIdAndUserId(Like value)
+        {
+            _connection.Open();
+            var res = _connection.QueryFirstOrDefault<Like>("select * from Likes where UserId = @USERID and ProductId = @PRODUCTID ", new { USERID = value.UserId, PRODUCTID = value.ProductId });
+            _connection.Close();
+            return res;
+        }
     }
 }

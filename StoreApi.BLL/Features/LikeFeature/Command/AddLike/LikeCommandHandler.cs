@@ -8,18 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StoreApi.BLL.Features.LikeFeature.Command.NewFolder.AddLike
+namespace StoreApi.BLL.Features.LikeFeature.Command.AddLike
 {
-    public class AddLikeCommandHandler : IRequestHandler<AddLikeCommand, Like>
+    public class LikeCommandHandler : IRequestHandler<LikeCommand, Like>
     {
         private readonly ILikeRepository _likeRepository;
 
-        public AddLikeCommandHandler(ILikeRepository likeRepository)
+        public LikeCommandHandler(ILikeRepository likeRepository)
         {
             _likeRepository = likeRepository;
         }
 
-        public Task<Like> Handle(AddLikeCommand request, CancellationToken cancellationToken)
+        public Task<Like> Handle(LikeCommand request, CancellationToken cancellationToken)
         {
             var res = _likeRepository.Create(request.Like);
             return Task.FromResult(res);

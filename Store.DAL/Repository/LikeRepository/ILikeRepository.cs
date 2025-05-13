@@ -11,5 +11,6 @@ namespace StoreApi.DAL.Repository.LikeRepository
     public interface ILikeRepository : IRepository<Like>
     {
         Like DeleteByProductIdAndUserId(Like value);
+        Like GetByProductIdAndUserId(Like value);
     }
 }

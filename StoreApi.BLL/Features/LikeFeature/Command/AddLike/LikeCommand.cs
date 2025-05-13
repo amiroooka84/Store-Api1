@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StoreApi.BLL.Features.LikeFeature.Command.NewFolder.DeleteLike
+namespace StoreApi.BLL.Features.LikeFeature.Command.AddLike
 {
-    public class DeleteLikeCommand : IRequest<Like>
+    public class LikeCommand : IRequest<Like>
     {
         public Like Like { get; set; }
     }

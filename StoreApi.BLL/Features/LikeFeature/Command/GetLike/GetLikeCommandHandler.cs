@@ -7,19 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StoreApi.BLL.Features.LikeFeature.Command.NewFolder.DeleteLike
+namespace StoreApi.BLL.Features.LikeFeature.Command.GetLike
 {
-    public class DeleteLikeCommandHandler : IRequestHandler<DeleteLikeCommand, Like>
+    public class GetLikeCommandHandler : IRequestHandler<GetLikeCommand, Like>
     {
         private readonly ILikeRepository _likeRepository;
 
-        public DeleteLikeCommandHandler(ILikeRepository likeRepository)
+        public GetLikeCommandHandler(ILikeRepository likeRepository)
         {
             _likeRepository = likeRepository;
         }
-        public Task<Like> Handle(DeleteLikeCommand request, CancellationToken cancellationToken)
+        public Task<Like> Handle(GetLikeCommand request, CancellationToken cancellationToken)
         {
-            var res = _likeRepository.DeleteByProductIdAndUserId(request.Like);
+            var res = _likeRepository.GetByProductIdAndUserId(request.Like);
             return Task.FromResult(res);
         }
     }

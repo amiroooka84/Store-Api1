@@ -189,7 +189,9 @@ namespace StoreApi.Controllers
         [HttpDelete(Name = "DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(IntIdField id)
         {
-            bool res = await _mediator.Send(new DeleteUserAddressCommand() { id = id.id }) == null ? false : true;
+            string phoneNumber = this.User.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
+            User user = await _userManager.FindByNameAsync(phoneNumber);
+            bool res = await _mediator.Send(new DeleteUserAddressCommand() { id = id.id , UserId = user.Id }) == null ? false : true;
             return Ok(res);
         }
 

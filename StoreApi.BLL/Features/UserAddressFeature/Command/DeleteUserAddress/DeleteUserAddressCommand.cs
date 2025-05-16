@@ -11,5 +11,6 @@ namespace StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress
     public class DeleteUserAddressCommand : IRequest<Address>
     {
         public int id { get; set; }
+        public string UserId { get; set; }
     }
 }

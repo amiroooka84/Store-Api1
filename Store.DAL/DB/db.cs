@@ -8,6 +8,7 @@ using StoreApi.Entity._Basket;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Address;
 using StoreApi.Entity._Like;
+using StoreApi.Entity._Comment;
 
 namespace StoreApi.DAL.DB
 {
@@ -33,6 +34,7 @@ namespace StoreApi.DAL.DB
         public DbSet<ProductOrder> ProductOrders { get; set; }
         public DbSet<ImagePath> ImagesPath { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
   
 
     }

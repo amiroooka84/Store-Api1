@@ -19,7 +19,12 @@ namespace StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress
         }
         public Task<Address> Handle(DeleteUserAddressCommand request, CancellationToken cancellationToken)
         {
-            var res = _userAddressRepository.Delete(request.id);
+            var Address = _userAddressRepository.GetById(request.id);
+            Address res = null;
+            if (Address.UserId == request.UserId)
+            {
+                 res = _userAddressRepository.Delete(request.id);
+            }
             return Task.FromResult(res);
         }
     }

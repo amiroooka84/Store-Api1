@@ -56,9 +56,6 @@ namespace StoreApi.Controllers.UserSide
 
                  isLike =  likeRes != null ? true : false;
             }
-
-
-
             await _mediator.Send(new GetByIdProductQuery() { id = id.id });
             GetByIdProductViewModel res = await _mediator.Send(new GetByIdProductQuery() { id = id.id });
             res.IsLiked = isLike;

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StoreApi.Entity._User;
+using StoreApi.Models.FieldsRequest.AdminSide.ManageUser;
 using StoreApi.Models.FieldsRequest.IDField;
 using System.Security.Claims;
 
@@ -22,7 +23,17 @@ namespace StoreApi.Controllers.AdminSide
         public IActionResult GetAllUsers()
         {
             List<User> users = _userManager.Users.ToList();
-            return Ok(users);
+            List<ManageUserViewModel> viewModels = new List<ManageUserViewModel>();
+            foreach (var user in users) 
+            {
+                ManageUserViewModel manageUser = new ManageUserViewModel()
+                {
+                    User = user,                
+                    Role = _userManager.GetClaimsAsync(user).Result.FirstOrDefault().ToString()
+                };
+                viewModels.Add(manageUser);
+            }           
+            return Ok(viewModels);
         }
 
         [HttpDelete(Name = "DeleteUser")]

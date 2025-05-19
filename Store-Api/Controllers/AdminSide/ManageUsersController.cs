@@ -29,7 +29,8 @@ namespace StoreApi.Controllers.AdminSide
                 ManageUserViewModel manageUser = new ManageUserViewModel()
                 {
                     User = user,                
-                    Role = _userManager.GetClaimsAsync(user).Result.FirstOrDefault().ToString()
+                    
+                    Role = _userManager.GetClaimsAsync(user).Result.FirstOrDefault().Type == "UserNumber" ? "3" : _userManager.GetClaimsAsync(user).Result.FirstOrDefault().Value
                 };
                 viewModels.Add(manageUser);
             }           

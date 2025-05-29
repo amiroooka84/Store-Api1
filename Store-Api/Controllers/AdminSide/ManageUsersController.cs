@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Bot.Schema;
 using StoreApi.Entity._User;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageUser;
 using StoreApi.Models.FieldsRequest.IDField;
@@ -10,7 +12,7 @@ namespace StoreApi.Controllers.AdminSide
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin" , Policy = "Admin1")]
     public class ManageUsersController : ControllerBase
     {
         private readonly UserManager<User> _userManager;

@@ -53,11 +53,8 @@ internal class Program
                             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Store-Api", Version = "v1" });
                         });
 
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
         {
             options.RequireHttpsMetadata = false;
             options.SaveToken = true;
@@ -66,18 +63,29 @@ internal class Program
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Constansts.JWT_SECURITY_KEY_FOR_TOKEN)),
                 ValidateIssuer = false,
-                ValidateAudience = false
+                ValidateAudience = false,
+                ValidateLifetime = true,
             };
         });
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("AdminOnly",
-            policy => policy.RequireClaim("AdminNumber")
-            );
-            options.AddPolicy("User",
-            policy => policy.RequireClaim("UserNumber")
-            );
+            options.AddPolicy("Admin1", policy =>
+            {
+                policy.RequireAssertion(context =>
+                {
+                    var number = context.User.FindFirst("AdminNumber");
+                    return number != null && int.Parse(number.Value) < 2;
+                });
+            });
+            options.AddPolicy("Admin2", policy =>
+            {
+                policy.RequireClaim("AdminNumber");
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser();
+            });
+
+
         });
 
         builder.Services.AddIdentity<User, IdentityRole>(option =>

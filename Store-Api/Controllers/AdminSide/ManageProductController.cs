@@ -15,7 +15,7 @@ namespace StoreApi.Controllers.AdminSide
 {
     [Route("/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer"/*,Roles = "Admin"*/)]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public class ManageProductController : ControllerBase
     {
         private readonly IMapper _mapper;

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoreApi.BLL.Features.OrderFeature.Command.ChangeOrderState;
@@ -13,6 +14,8 @@ namespace StoreApi.Controllers.AdminSide
 {
     [Route("/[controller]/[action]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+
     public class ManageOrderController : ControllerBase
     {
         private readonly IMediator _mediator;

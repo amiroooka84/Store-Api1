@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using StoreApi.Entity._User;
 using StoreApi.Models;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -29,8 +30,8 @@ namespace StoreApi
             User user = new User();
             user = await _userManager.FindByNameAsync(PhoneNumber) ;
             var result = await _userManager.GetClaimsAsync(user);
-            var isRole = result.First().ToString();
-            if (isRole  == "AdminNumber: 1")
+            var isRole = result.First();
+            if (isRole.Type == "AdminNumber")
             {
                 RoleUser = "Admin";
             }
@@ -42,8 +43,9 @@ namespace StoreApi
                 {
                     new Claim("PhoneNumber" , PhoneNumber),
                     new Claim(ClaimTypes.Role , RoleUser),
-
+                    new Claim(isRole.Type , isRole.Value),
                 }),
+                
                 Expires = TokenExpireTimeStamp,
 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Tokenkey),SecurityAlgorithms.Aes192CbcHmacSha384)
@@ -57,7 +59,7 @@ namespace StoreApi
                 Token = Token,
                 PhoneNumber = PhoneNumber,
                 Expire_Time = TokenExpireTimeStamp,
-                Role = RoleUser,
+                Role = result.FirstOrDefault().Type == "UserNumber" ? "3" : _userManager.GetClaimsAsync(user).Result.FirstOrDefault().Value,
             };
         }
 

@@ -41,13 +41,15 @@ namespace StoreApi.Controllers
         private readonly IDataProtector _protector ;
         private readonly IMediator _mediator;
         private readonly IMemoryCache _memoryCache;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> SignInManager, IDataProtectionProvider provider , IMediator mediator , IMemoryCache memoryCache)
+        public AccountController(UserManager<User> userManager, SignInManager<User> SignInManager, IDataProtectionProvider provider , IMediator mediator , IMemoryCache memoryCache , RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _SignInManager = SignInManager;
             _mediator = mediator;
             _memoryCache = memoryCache;
+            _roleManager = roleManager;
             var serviceCollection = new ServiceCollection();
 
             string sKeysPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Keys");
@@ -87,7 +89,7 @@ namespace StoreApi.Controllers
             {
                 return Ok(false);
             }
-            _memoryCache.Remove("ConfirmCode");
+            
             //var ConfirmCode = JsonConvert.DeserializeObject<ConfirmCode>(_memoryCache.Get("ConfirmCode"));
             if (ConfirmCode.PhoneNumber == VerifiFieldRequest.PhoneNumber && ConfirmCode.Code == VerifiFieldRequest.Code && ConfirmCode.ExpireTime > DateTime.Now)
             {
@@ -97,11 +99,13 @@ namespace StoreApi.Controllers
                 }
                 if (_userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber).Result != null)
                 {
+
                     JWTAuthorizeManage jWTAuthorizeManage = new JWTAuthorizeManage(_userManager);
                     var Result = await jWTAuthorizeManage.AuthenticateAsync(VerifiFieldRequest.PhoneNumber);
                     if (Result == null)
                         return Ok(false);
                     else
+                        _memoryCache.Remove("ConfirmCode");
                         return Ok(Result);
                 }
                 else
@@ -118,12 +122,14 @@ namespace StoreApi.Controllers
                         User user = new User();
                         user = await _userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber);
                         await _userManager.AddClaimAsync(user, new Claim("AdminNumber", "1"));
+                        
                     }
                     else
                     {
                         User user = new User();
                         user = await _userManager.FindByNameAsync(VerifiFieldRequest.PhoneNumber);
                         await _userManager.AddClaimAsync(user, new Claim("UserNumber", "1"));
+                        await _userManager.AddToRoleAsync(user, "User");
                     }
                     if (res.Succeeded)
                     {
@@ -132,6 +138,7 @@ namespace StoreApi.Controllers
                         if (Result == null)
                             return Ok(false);
                         else
+                            _memoryCache.Remove("ConfirmCode");
                             return Ok(Result);
                     }
                     return Ok(false);

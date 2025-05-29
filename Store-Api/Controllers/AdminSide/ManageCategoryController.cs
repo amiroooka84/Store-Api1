@@ -17,7 +17,7 @@ namespace StoreApi.Controllers.AdminSide
 {
     [Route("/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer" , Roles = "Admin")]
     public class ManageCategoryController : ControllerBase
     {
         private readonly IMapper _mapper;

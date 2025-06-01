@@ -1,7 +1,13 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoreApi.BLL.Features.BannerFeature.Command.AddBanner;
+using StoreApi.BLL.Features.BannerFeature.Command.DeleteBanner;
+using StoreApi.BLL.Features.BannerFeature.Query.GetAllBanners;
+using StoreApi.Entity._Banner;
 using StoreApi.Models.FieldsRequest.AdminSide.ManagePages;
 using StoreApi.Models.FieldsRequest.IDField;
 
@@ -9,56 +15,41 @@ namespace StoreApi.Controllers.AdminSide
 {
     [Route("/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
 
     public class ManagePagesController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult AddBanner(AddBannerFieldRequest bannerFieldRequest)
+        private readonly IMediator _mediator;
+
+        public ManagePagesController(IMediator mediator)
         {
-            using (var file = new XLWorkbook("Banners.xlsx"))
-            {
-                var workSheet = file.Worksheet(1);
+            _mediator = mediator;
+        }
 
-                int rowNum = workSheet.LastRowUsed().RowNumber();
-
-                workSheet.Row(rowNum).InsertRowsBelow(1).FirstOrDefault().Cell(1).Value = bannerFieldRequest.BannerPath;
-
-                file.Save();
-                return Ok();
-            }
+        [HttpPost]
+        public async Task<IActionResult> AddBanner(AddBannerFieldRequest bannerFieldRequest)
+        {
+            Banner banner = new Banner() 
+            { 
+                BannerImage = bannerFieldRequest.BannerPath 
+            };
+            Banner res = await _mediator.Send(new AddBannerCommand() { Banner = banner });
+            return Ok(res);
         }
 
         [HttpDelete]
-        public IActionResult DeleteBanner(IntIdField id)
+        public async Task<IActionResult> DeleteBanner(IntIdField id)
         {
-            using (var file = new XLWorkbook("Banners.xlsx"))
-            {
-                var workSheet = file.Worksheet(1);            
-                workSheet.Row(id.id).Delete();
-                file.Save();
-                return Ok();
-            }
+            Banner res = await _mediator.Send(new DeleteBannerCommand() { id = id.id });
+            return Ok(res);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult GetBanners()
+        public async Task<IActionResult> GetBanners()
         {
-            using (var file = new XLWorkbook("Banners.xlsx"))
-            {
-                var workSheet = file.Worksheet(1);
-
-                //workSheet.Row(workSheet.RowCount() > 0 ? workSheet.RowCount() : 1).InsertRowsBelow(1);
-                Dictionary<int , string> Banners = new Dictionary<int , string>();
-
-                foreach (var item in workSheet.Rows())
-                {
-                    Banners.Add(item.RowNumber() , item.Cell(1).Value.GetText());
-                }
-                Banners.Remove(1);
-                return Ok(Banners);
-            }
+            var res = await _mediator.Send(new GetAllBannersQuery());
+            return Ok(res);
         }
     }
 }

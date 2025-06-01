@@ -9,6 +9,7 @@ using StoreApi.Entity._Image;
 using StoreApi.Entity._Address;
 using StoreApi.Entity._Like;
 using StoreApi.Entity._Comment;
+using StoreApi.Entity._Banner;
 
 namespace StoreApi.DAL.DB
 {
@@ -35,7 +36,7 @@ namespace StoreApi.DAL.DB
         public DbSet<ImagePath> ImagesPath { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
-  
-
+        public DbSet<Banner> Banners{ get; set; }
+ 
     }
 }

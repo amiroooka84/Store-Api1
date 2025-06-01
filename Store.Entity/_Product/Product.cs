@@ -21,6 +21,7 @@ namespace StoreApi.Entity._Product
         public string Description { get; set; }
         public string specs { get; set; }
         public string ImagePath { get; set; }
+        public string Image3DPath { get; set; }
         public int CategoryId { get; set; }
     }
 

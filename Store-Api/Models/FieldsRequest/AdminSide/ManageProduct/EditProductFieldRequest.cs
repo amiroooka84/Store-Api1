@@ -24,6 +24,7 @@ namespace StoreApi.Models.FieldsRequest.AdminSide.ManageProduct
         public List<string> Tags { get; set; }
 
         public string? ImagePath { get; set; }
+        public string? Image3DPath { get; set; }
 
         public List<string> ImagesPath { get; set; }
     }

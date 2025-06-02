@@ -34,6 +34,7 @@ namespace StoreApi.Controllers.AdminSide
             Product product = _mapper.Map<AddProductFieldRequest, Product>(productFieldRequest);
             addProductCommand.Product = product;
             Product res = await _mediator.Send(addProductCommand);
+            
             return Ok(res);
         }
 

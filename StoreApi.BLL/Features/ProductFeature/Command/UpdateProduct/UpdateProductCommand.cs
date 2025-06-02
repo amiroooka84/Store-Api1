@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.UpdateProduct
     {
         public Product Product { get; set; }
         public List<ProductColors> Colors { get; set; }
-        public List<string> Tags { get; set; }
-        public List<string> ImagesPath { get; set; }
+        public List<ProductTag> Tags { get; set; }
+        public List<ImagePath> ImagesPath { get; set; }
     }
 }

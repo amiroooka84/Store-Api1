@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using StoreApi.BLL.Features.ProductFeature.Command.AddProduct;
 using StoreApi.BLL.Features.ProductFeature.Command.UpdateProduct;
+using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageProduct;
 
@@ -10,8 +11,13 @@ namespace StoreApi.Models.Mapper.AdminSide
     {
         public ProductProfile()
         {
+            CreateMap<ImagePathFieldRequest, ImagePath>();
+            CreateMap<ProductColorFieldRequest, ProductColors>();
+            CreateMap<ProductTagFieldRequest, ProductTag>();
 
-            CreateMap<AddProductFieldRequest, AddProductCommand>();               
+
+
+            CreateMap<AddProductFieldRequest, AddProductCommand>();
             CreateMap<AddProductFieldRequest, Product>();               
             //.ForMember(dest => dest.Product.Name, act => act.MapFrom(src => src.Name))
             //.ForMember(dest => dest.Product.Slack, act => act.MapFrom(src => src.Slack))

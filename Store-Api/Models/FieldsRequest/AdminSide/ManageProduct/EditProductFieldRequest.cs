@@ -1,4 +1,5 @@
-﻿using StoreApi.Entity._Product;
+﻿using StoreApi.Entity._Image;
+using StoreApi.Entity._Product;
 using System.Web.Mvc;
 
 
@@ -20,12 +21,12 @@ namespace StoreApi.Models.FieldsRequest.AdminSide.ManageProduct
         [AllowHtml]
         public string? specs { get; set; }
         public int CategoryId { get; set; }
-        public List<ProductColors> Colors { get; set; }
-        public List<string> Tags { get; set; }
+        public List<ProductColorFieldRequest> Colors { get; set; }
+        public List<ProductTagFieldRequest> Tags { get; set; }
 
         public string? ImagePath { get; set; }
         public string? Image3DPath { get; set; }
 
-        public List<string> ImagesPath { get; set; }
+        public List<ImagePathFieldRequest> ImagesPath { get; set; }
     }
 }

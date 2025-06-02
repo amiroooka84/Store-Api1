@@ -37,11 +37,11 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
             }
             foreach (var image in request.ImagesPath)
             {
-                _imagePathRepository.Create(new ImagePath() { Image = image, ProductId = request.Product.id });
+                _imagePathRepository.Create(new ImagePath() { Image = image.Image, ProductId = request.Product.id });
             }
             foreach (var tag in request.Tags)
             {
-                _productTagRepository.Create(new ProductTag() { Tag = tag, ProductId = request.Product.id });
+                _productTagRepository.Create(new ProductTag() { Tag = tag.Tag, ProductId = request.Product.id });
             }
             var res = _productRepository.Create(request.Product);
             return Task.FromResult(res);

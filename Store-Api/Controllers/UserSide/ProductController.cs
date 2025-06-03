@@ -8,25 +8,18 @@ using Microsoft.Data.SqlClient;
 using StoreApi.BLL.Features.ProductFeature.Query.GetByIdProduct;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Like;
-using StoreApi.Entity._Product;
 using StoreApi.Entity._User;
 using StoreApi.Models.FieldsRequest.IDField;
-using StoreApi.Controllers;
 using Microsoft.AspNetCore.Authentication;
-using StoreApi.BLL.Features.LikeFeature.Query.GetLike;
 using StoreApi.BLL.Features.LikeFeature.Query.GetLikedProduct;
 using StoreApi.Models.FieldsRequest.UserSide.Product;
 using StoreApi.Entity._Comment;
 using StoreApi.BLL.Features.CommentFeature.Command.AddComment;
-using System.Globalization;
-using StoreApi.BLL.Service.ConvertDate;
 using StoreApi.BLL.Features.CommentFeature.Query.GetProductComments;
 using StoreApi.BLL.Features.CommentFeature.Command.DeleteComment;
-using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
-using System.Text.Json;
-using System.Web.Helpers;
 using Newtonsoft.Json;
+using StoreApi.Models.Services.Redis;
 
 
 namespace StoreApi.Controllers.UserSide
@@ -37,17 +30,13 @@ namespace StoreApi.Controllers.UserSide
     {
         private readonly IMediator _mediator;
         private readonly UserManager<User> _userManager;
-        private readonly IConnectionMultiplexer _connection;
-        private readonly ISubscriber _subscriber;
-        private readonly IDatabase _redis;
+        private readonly ICacheProvider _cacheProvider;
 
-        public ProductController(IMediator mediator, UserManager<User> userManager, IConnectionMultiplexer connection)
+        public ProductController(IMediator mediator, UserManager<User> userManager, ICacheProvider cacheProvider)
         {
             _mediator = mediator;
             _userManager = userManager;
-            _connection = connection;
-            _subscriber = connection.GetSubscriber();
-            _redis = connection.GetDatabase();
+            _cacheProvider = cacheProvider;
         }
 
         [HttpGet(Name = "GetProduct")]
@@ -56,6 +45,7 @@ namespace StoreApi.Controllers.UserSide
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var result = await HttpContext.AuthenticateAsync("Bearer");
             bool isLike = false;
+            GetByIdProductViewModel res = new GetByIdProductViewModel();
             if (token != null)
             {
                 string phoneNumber = result.Principal.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
@@ -69,19 +59,19 @@ namespace StoreApi.Controllers.UserSide
 
                  isLike =  likeRes != null ? true : false;
             }
-            await _mediator.Send(new GetByIdProductQuery() { id = id.id });
-            GetByIdProductViewModel res = await _mediator.Send(new GetByIdProductQuery() { id = id.id });
+
             res.IsLiked = isLike;
 
-            var redisResult = _redis.StringGetAsync("ProductId:" + id.id).Result;
-            if (redisResult.HasValue)
+            res = await _cacheProvider.GetCacheAsync("ProductId:" + id.id);
+            if (res != null)
             {
-                var cacheResult = JsonConvert.DeserializeObject<GetByIdProductViewModel>(redisResult.ToString());
-                cacheResult.IsLiked = isLike;
-                return Ok(cacheResult);
+                return Ok(res);
             }
-            string a = JsonConvert.SerializeObject(res);
-            await _redis.StringSetAsync("ProductId:"+id.id , a);
+
+            res = await _mediator.Send(new GetByIdProductQuery() { id = id.id });
+
+            await _cacheProvider.SetCacheAsync("ProductId:" + id.id , res);
+
             return Ok(res);
         }
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 using StoreApi.BLL.Features.ProductFeature.Command.AddProduct;
@@ -9,8 +10,10 @@ using StoreApi.BLL.Features.ProductFeature.Command.UpdateProduct;
 using StoreApi.BLL.Features.ProductFeature.Query.GetAllProducts;
 using StoreApi.BLL.Features.ProductFeature.Query.GetByIdProduct;
 using StoreApi.Entity._Product;
+using StoreApi.Entity._User;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageProduct;
 using StoreApi.Models.FieldsRequest.IDField;
+using StoreApi.Models.Services.Redis;
 
 namespace StoreApi.Controllers.AdminSide
 {
@@ -21,15 +24,13 @@ namespace StoreApi.Controllers.AdminSide
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        private readonly IConnectionMultiplexer _connection;
-        private readonly ISubscriber _subscriber;
+        private readonly ICacheProvider _cacheProvider;
 
-        public ManageProductController(IMapper mapper, IMediator mediator, IConnectionMultiplexer connection)
+        public ManageProductController(IMapper mapper, IMediator mediator, IConnectionMultiplexer connection, ICacheProvider cacheProvider)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _connection = connection;
-            _subscriber = connection.GetSubscriber();
+            _cacheProvider = cacheProvider;
         }
 
         [HttpPost(Name = "AddProduct")]
@@ -50,7 +51,7 @@ namespace StoreApi.Controllers.AdminSide
             Product product = _mapper.Map<EditProductFieldRequest, Product>(editProductFieldRequest);
             UpdateProductCommand.Product = product;
             Product res = await _mediator.Send(UpdateProductCommand);
-            _subscriber.Publish("My-Redis" , "ProductId:"+editProductFieldRequest.id);
+            _cacheProvider.Subscribe("ProductId:"+editProductFieldRequest.id);
             return Ok(res);
         }
 

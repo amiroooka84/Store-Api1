@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StoreApi.BLL.Features.OrderFeature.Command.AddOrder;
@@ -9,9 +8,7 @@ using StoreApi.BLL.Features.OrderFeature.Command.VerifyOrder;
 using StoreApi.BLL.Features.OrderFeature.Query.GetByUserIdOrders;
 using StoreApi.BLL.Features.OrderFeature.Query.GetOrderById;
 using StoreApi.BLL.Features.OrderFeature.Query.GetOrderProducts;
-using StoreApi.BLL.Features.ProductFeature.Query.GetAllProducts;
 using StoreApi.Entity._Order;
-using StoreApi.Entity._Product;
 using StoreApi.Entity._User;
 using StoreApi.Models.FieldsRequest.AccountField;
 using StoreApi.Models.FieldsRequest.IDField;

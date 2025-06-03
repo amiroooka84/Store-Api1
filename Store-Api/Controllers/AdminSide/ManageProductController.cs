@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using StoreApi.BLL.Features.ProductFeature.Command.AddProduct;
 using StoreApi.BLL.Features.ProductFeature.Command.DeleteProduct;
 using StoreApi.BLL.Features.ProductFeature.Command.UpdateProduct;
@@ -20,11 +21,15 @@ namespace StoreApi.Controllers.AdminSide
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly IConnectionMultiplexer _connection;
+        private readonly ISubscriber _subscriber;
 
-        public ManageProductController( IMapper mapper , IMediator mediator)
+        public ManageProductController(IMapper mapper, IMediator mediator, IConnectionMultiplexer connection)
         {
             _mapper = mapper;
             _mediator = mediator;
+            _connection = connection;
+            _subscriber = connection.GetSubscriber();
         }
 
         [HttpPost(Name = "AddProduct")]
@@ -45,6 +50,7 @@ namespace StoreApi.Controllers.AdminSide
             Product product = _mapper.Map<EditProductFieldRequest, Product>(editProductFieldRequest);
             UpdateProductCommand.Product = product;
             Product res = await _mediator.Send(UpdateProductCommand);
+            _subscriber.Publish("My-Redis" , "ProductId:"+editProductFieldRequest.id);
             return Ok(res);
         }
 

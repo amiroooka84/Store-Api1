@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using StoreApi;
 using StoreApi.BLL;
 using StoreApi.DAL;
@@ -16,6 +17,7 @@ using StoreApi.DAL.DB;
 using StoreApi.Entity._Product;
 using StoreApi.Entity._User;
 using StoreApi.Models.FieldsRequest.AdminSide.ManageProduct;
+using StoreApi.Models.Services.Redis;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -84,8 +86,6 @@ internal class Program
                 policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                 policy.RequireAuthenticatedUser();
             });
-
-
         });
 
         builder.Services.AddIdentity<User, IdentityRole>(option =>
@@ -108,6 +108,9 @@ internal class Program
             .SetDefaultKeyLifetime(new TimeSpan(30, 0, 0, 0))
 ;
 
+        //ConnectionMultiplexer.ConnectAsync("basketdb:6379");
+        builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect("localhost:6379,abortConnect=false"));
+        builder.Services.AddHostedService<RedisSyncService>();
 
         var app = builder.Build();
 

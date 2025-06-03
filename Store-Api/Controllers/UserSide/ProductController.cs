@@ -22,6 +22,12 @@ using System.Globalization;
 using StoreApi.BLL.Service.ConvertDate;
 using StoreApi.BLL.Features.CommentFeature.Query.GetProductComments;
 using StoreApi.BLL.Features.CommentFeature.Command.DeleteComment;
+using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
+using System.Text.Json;
+using System.Web.Helpers;
+using Newtonsoft.Json;
+
 
 namespace StoreApi.Controllers.UserSide
 {
@@ -31,12 +37,19 @@ namespace StoreApi.Controllers.UserSide
     {
         private readonly IMediator _mediator;
         private readonly UserManager<User> _userManager;
+        private readonly IConnectionMultiplexer _connection;
+        private readonly ISubscriber _subscriber;
+        private readonly IDatabase _redis;
 
-        public ProductController(IMediator mediator, UserManager<User> userManager)
+        public ProductController(IMediator mediator, UserManager<User> userManager, IConnectionMultiplexer connection)
         {
             _mediator = mediator;
             _userManager = userManager;
+            _connection = connection;
+            _subscriber = connection.GetSubscriber();
+            _redis = connection.GetDatabase();
         }
+
         [HttpGet(Name = "GetProduct")]
         public async Task<IActionResult> GetProduct(IntIdField id)
         {
@@ -59,6 +72,16 @@ namespace StoreApi.Controllers.UserSide
             await _mediator.Send(new GetByIdProductQuery() { id = id.id });
             GetByIdProductViewModel res = await _mediator.Send(new GetByIdProductQuery() { id = id.id });
             res.IsLiked = isLike;
+
+            var redisResult = _redis.StringGetAsync("ProductId:" + id.id).Result;
+            if (redisResult.HasValue)
+            {
+                var cacheResult = JsonConvert.DeserializeObject<GetByIdProductViewModel>(redisResult.ToString());
+                cacheResult.IsLiked = isLike;
+                return Ok(cacheResult);
+            }
+            string a = JsonConvert.SerializeObject(res);
+            await _redis.StringSetAsync("ProductId:"+id.id , a);
             return Ok(res);
         }
 

@@ -53,7 +53,7 @@ namespace StoreApi.Controllers.UserSide
                 Like like = new Like()
                 {
                     UserId = user.Id,
-                    ProductId = id.id,
+                    ProductId = id,
                 };
                 Like likeRes = await _mediator.Send(new GetLikedProductQuery() { Like = like });
 
@@ -62,15 +62,15 @@ namespace StoreApi.Controllers.UserSide
 
             res.IsLiked = isLike;
 
-            res = await _cacheProvider.GetCacheAsync("ProductId:" + id.id);
+            res = await _cacheProvider.GetCacheAsync("ProductId:" + id);
             if (res != null)
             {
                 return Ok(res);
             }
 
-            res = await _mediator.Send(new GetByIdProductQuery() { id = id.id });
+            res = await _mediator.Send(new GetByIdProductQuery() { id = id });
 
-            await _cacheProvider.SetCacheAsync("ProductId:" + id.id , res);
+            await _cacheProvider.SetCacheAsync("ProductId:" + id , res);
 
             return Ok(res);
         }

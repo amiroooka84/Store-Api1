@@ -40,7 +40,7 @@ namespace StoreApi.Controllers.UserSide
         }
 
         [HttpGet(Name = "GetProduct")]
-        public async Task<IActionResult> GetProduct(IntIdField id)
+        public async Task<IActionResult> GetProduct(int id)
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var result = await HttpContext.AuthenticateAsync("Bearer");

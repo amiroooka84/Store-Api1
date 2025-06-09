@@ -70,11 +70,10 @@ namespace StoreApi.Controllers.AdminSide
         }
 
         [HttpGet(Name = "GetProductById")]
-        public async Task<IActionResult> GetProductById(IntIdField id)
+        public async Task<IActionResult> GetProductById(int id)
         {
-            GetByIdProductViewModel res = await _mediator.Send(new GetByIdProductQuery() { id = id.id});
+            GetByIdProductViewModel res = await _mediator.Send(new GetByIdProductQuery() { id = id});
             return Ok(res);
-
         }
     }
 }

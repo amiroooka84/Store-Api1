@@ -11,11 +11,8 @@ namespace StoreApi.Entity._Image
     public class ImagePath : EntityBase
     {
         public int ProductId { get; set; }
-        string _Image; 
-        public string Image {
-            get { return  _Image; } 
-            set {_Image = "path: " + value; }
-        }
+
+        public string Image { get; set; }
     }
 }
 

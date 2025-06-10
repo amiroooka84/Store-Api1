@@ -30,20 +30,20 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
         }
         public Task<Product> Handle(AddProductCommand request, CancellationToken cancellationToken)
         {
+            var res = _productRepository.Create(request.Product);
             foreach (var color in request.Colors)
             {
-                color.ProductId = request.Product.id;
+                color.ProductId = res.id;
                 _productColorsRepository.Create(color);
             }
             foreach (var image in request.ImagesPath)
             {
-                _imagePathRepository.Create(new ImagePath() { Image = image.Image, ProductId = request.Product.id });
+                _imagePathRepository.Create(new ImagePath() { Image = image.Image, ProductId = res.id });
             }
             foreach (var tag in request.Tags)
             {
-                _productTagRepository.Create(new ProductTag() { Tag = tag.Tag, ProductId = request.Product.id });
+                _productTagRepository.Create(new ProductTag() { Tag = tag.Tag, ProductId = res.id });
             }
-            var res = _productRepository.Create(request.Product);
             return Task.FromResult(res);
         }
     }

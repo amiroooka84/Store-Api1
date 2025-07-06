@@ -9,6 +9,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
     {
         public Product Product { get; set; }
         public List<ProductColors> Colors { get; set; }
+        public List<ProductSpecs> Specs { get; set; }
         public List<ProductTag> Tags { get; set; }
         public List<ImagePath> ImagesPath { get; set; }
     }

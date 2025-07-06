@@ -19,10 +19,16 @@ namespace StoreApi.Entity._Product
         public int Discount { get; set; }
         public int Number { get; set; }
         public string Description { get; set; }
-        public string specs { get; set; }
         public string ImagePath { get; set; }
         public string Image3DPath { get; set; }
         public int CategoryId { get; set; }
+    }
+
+    public class ProductSpecs : EntityBase
+    {
+        public string Specs { get; set; }
+        public string Value { get; set; }
+        public int ProductId { get; set; }
     }
 
     public class ProductColors: EntityBase

@@ -2,6 +2,7 @@
 using StoreApi.DAL.Repository.ImagePathRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
+using StoreApi.DAL.Repository.ProductSpecsRepository;
 using StoreApi.DAL.Repository.ProductTagRepository;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
@@ -20,14 +21,17 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
         private readonly IProductColorsRepository _productColorsRepository;
         private readonly IProductTagRepository _productTagRepository;
         private readonly IImagePathRepository _imagePathRepository;
+        private readonly IProductSpecsRepository _productSpecsRepository;
 
-        public AddProductCommandHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository)
+        public AddProductCommandHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository, IProductSpecsRepository productSpecsRepository)
         {
             _productRepository = productRepository;
             _productColorsRepository = productColorsRepository;
             _productTagRepository = productTagRepository;
             _imagePathRepository = imagePathRepository;
+            _productSpecsRepository = productSpecsRepository;
         }
+
         public Task<Product> Handle(AddProductCommand request, CancellationToken cancellationToken)
         {
             var res = _productRepository.Create(request.Product);
@@ -43,6 +47,10 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.AddProduct
             foreach (var tag in request.Tags)
             {
                 _productTagRepository.Create(new ProductTag() { Tag = tag.Tag, ProductId = res.id });
+            }
+            foreach (var Specs in request.Specs)
+            {
+                _productSpecsRepository.Create(new ProductSpecs() { Specs = Specs.Specs, Value = Specs.Value , ProductId = res.id });
             }
             return Task.FromResult(res);
         }

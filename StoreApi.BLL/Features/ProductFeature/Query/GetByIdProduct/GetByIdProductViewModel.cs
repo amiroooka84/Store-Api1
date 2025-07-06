@@ -13,6 +13,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Query.GetByIdProduct
     {
         public Product Product { get; set; }
         public IEnumerable<ProductColors> Colors { get; set; }
+        public IEnumerable<ProductSpecs> Specs { get; set; }
         public IEnumerable<ProductTag> Tags { get; set; }
         public IEnumerable<ImagePath> ImagesPath { get; set; }
         public bool IsLiked { get; set; }

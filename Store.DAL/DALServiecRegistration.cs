@@ -12,6 +12,7 @@ using StoreApi.DAL.Repository.LikeRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
 using StoreApi.DAL.Repository.OrderRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
+using StoreApi.DAL.Repository.ProductSpecsRepository;
 using StoreApi.DAL.Repository.ProductTagRepository;
 using StoreApi.DAL.Repository.RepositoryBase;
 using StoreApi.DAL.Repository.UserAddressRepository;
@@ -27,6 +28,7 @@ namespace StoreApi.DAL
             services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductColorsRepository, ProductColorsRepository>();
+            services.AddScoped<IProductSpecsRepository, ProductSpecsRepository>();
             services.AddScoped<IProductTagRepository, ProductTagRepository>();
             services.AddScoped<IImagePathRepository,ImagePathRepository>();
             services.AddScoped<ICategoryRepository,CategoryRepository>();

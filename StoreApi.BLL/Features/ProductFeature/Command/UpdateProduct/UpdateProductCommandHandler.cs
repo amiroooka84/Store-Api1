@@ -2,6 +2,7 @@
 using StoreApi.DAL.Repository.ImagePathRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
+using StoreApi.DAL.Repository.ProductSpecsRepository;
 using StoreApi.DAL.Repository.ProductTagRepository;
 using StoreApi.Entity._Image;
 using StoreApi.Entity._Product;
@@ -19,20 +20,24 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.UpdateProduct
         private readonly IProductColorsRepository _productColorsRepository;
         private readonly IProductTagRepository _productTagRepository;
         private readonly IImagePathRepository _imagePathRepository;
+        private readonly IProductSpecsRepository _productSpecsRepository;
 
-        public UpdateProductCommandHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository)
+        public UpdateProductCommandHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository, IProductSpecsRepository productSpecsRepository)
         {
             _productRepository = productRepository;
             _productColorsRepository = productColorsRepository;
             _productTagRepository = productTagRepository;
             _imagePathRepository = imagePathRepository;
+            _productSpecsRepository = productSpecsRepository;
         }
+
         public  Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var res = _productRepository.Update(request.Product);
             _productColorsRepository.DeleteByProductId(request.Product.id);
             _imagePathRepository.DeleteByProductId(request.Product.id);
             _productTagRepository.DeleteByProductId(request.Product.id);
+            _productSpecsRepository.DeleteByProductId(request.Product.id);
             foreach (var color in request.Colors)
             {
                 color.ProductId = request.Product.id;
@@ -45,6 +50,10 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.UpdateProduct
             foreach (var tag in request.Tags)
             {
                 _productTagRepository.Create(new ProductTag() { Tag = tag.Tag, ProductId = request.Product.id });
+            }
+            foreach (var specs in request.Specs)
+            {
+                _productSpecsRepository.Create(new ProductSpecs() { Specs = specs.Specs, Value = specs.Value, ProductId = res.id });
             }
             return Task.FromResult(res); ;
         }

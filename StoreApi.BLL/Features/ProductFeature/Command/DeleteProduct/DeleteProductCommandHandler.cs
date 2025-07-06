@@ -2,6 +2,7 @@
 using StoreApi.DAL.Repository.ImagePathRepository;
 using StoreApi.DAL.Repository.ManagementRepository;
 using StoreApi.DAL.Repository.ProductColorsRepository;
+using StoreApi.DAL.Repository.ProductSpecsRepository;
 using StoreApi.DAL.Repository.ProductTagRepository;
 using StoreApi.Entity._Product;
 using System;
@@ -18,13 +19,15 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.DeleteProduct
         private readonly IProductColorsRepository _productColorsRepository;
         private readonly IProductTagRepository _productTagRepository;
         private readonly IImagePathRepository _imagePathRepository;
+        private readonly IProductSpecsRepository _productSpecsRepository;
 
-        public DeleteProductCommandHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository)
+        public DeleteProductCommandHandler(IProductRepository productRepository, IProductColorsRepository productColorsRepository, IProductTagRepository productTagRepository, IImagePathRepository imagePathRepository, IProductSpecsRepository productSpecsRepository)
         {
             _productRepository = productRepository;
             _productColorsRepository = productColorsRepository;
             _productTagRepository = productTagRepository;
             _imagePathRepository = imagePathRepository;
+            _productSpecsRepository = productSpecsRepository;
         }
         public Task<Product> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
@@ -32,6 +35,7 @@ namespace StoreApi.BLL.Features.ProductFeature.Command.DeleteProduct
             _imagePathRepository.DeleteByProductId(request.id);
             _productColorsRepository.DeleteByProductId(request.id);
             _productTagRepository.DeleteByProductId(request.id);
+            _productSpecsRepository.DeleteByProductId(request.id);
             return Task.FromResult(res);
         }
     }

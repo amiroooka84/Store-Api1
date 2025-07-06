@@ -29,6 +29,7 @@ namespace StoreApi.DAL.DB
         public DbSet<Address> Addresses { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
         public DbSet<ProductTag> ProductTags { get; set; }
+        public DbSet<ProductSpecs> ProductSpecs { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Order> Orders { get; set; }

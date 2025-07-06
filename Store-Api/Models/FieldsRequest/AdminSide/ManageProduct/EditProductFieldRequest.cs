@@ -19,10 +19,10 @@ namespace StoreApi.Models.FieldsRequest.AdminSide.ManageProduct
         [AllowHtml]
         public string? Description { get; set; }
         [AllowHtml]
-        public string? specs { get; set; }
         public int CategoryId { get; set; }
         public List<ProductColorFieldRequest> Colors { get; set; }
         public List<ProductTagFieldRequest> Tags { get; set; }
+        public List<ProductSpecsFieldRequest> Specs { get; set; }
         public string? ImagePath { get; set; }
         public string? Image3DPath { get; set; }
         public List<ImagePathFieldRequest> ImagesPath { get; set; }

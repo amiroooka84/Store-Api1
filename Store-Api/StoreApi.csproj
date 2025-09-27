@@ -7,6 +7,7 @@
     <RootNamespace>StoreApi</RootNamespace>
     <UserSecretsId>b6f368b1-a56b-4b78-ab75-2a6b134b98e1</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>

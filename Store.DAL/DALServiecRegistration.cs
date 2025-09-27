@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StoreApi.DAL.DB;
+using StoreApi.DAL.Migrations;
 using StoreApi.DAL.Repository.BannerRepository;
 using StoreApi.DAL.Repository.CategoryRepository;
 using StoreApi.DAL.Repository.CommentRepository;
@@ -23,7 +24,7 @@ namespace StoreApi.DAL
 {
     public static class DALServiecRegistration
     {
-        public static IServiceCollection AddDataAccessLayerServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDataAccessLayerServices(this IServiceCollection services, IConfiguration configuration )
         {
             services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
             services.AddScoped<IProductRepository, ProductRepository>();

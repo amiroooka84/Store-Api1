@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
@@ -21,6 +22,9 @@ using StoreApi.Models.Services.Redis;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using StoreApi.DAL.Migrations;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore.Storage;
 
 [EnableCors]
 internal class Program
@@ -28,11 +32,14 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        db db = new db();
+        db.Database.MigrateAsync();
+
         builder.Services.AddDbContext<db>(options =>
         {
             options.UseSqlServer(ConStr.con);
         }, ServiceLifetime.Transient);
-
 
         var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         builder.Services.AddCors(options =>
@@ -44,7 +51,7 @@ internal class Program
                                                       "http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
                               });
         });
-
+        
         builder.Services.AddBusinessAccessLayerServices(builder.Configuration);
         builder.Services.AddDataAccessLayerServices(builder.Configuration);
         builder.Services.AddControllers();
@@ -109,18 +116,13 @@ internal class Program
 ;
 
         //ConnectionMultiplexer.ConnectAsync("basketdb:6379");
-        builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect("localhost:6379,abortConnect=false"));
+        builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect("redisdb:6379,abortConnect=false"));
         builder.Services.AddHostedService<RedisSyncService>();
         builder.Services.AddScoped<ICacheProvider , CacheProvider>();
 
         var app = builder.Build();
 
-        //using (var scope = app.Services.CreateScope())
-        //{
-        //    var dbcon = scope.ServiceProvider.GetRequiredService<db>();
-        //    //Same as the question
-        //    dbcon.Database.Migrate();
-        //}
+
 
 
         //if (app.Environment.IsDevelopment())

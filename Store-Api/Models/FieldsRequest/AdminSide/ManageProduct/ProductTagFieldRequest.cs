@@ -2,6 +2,6 @@
 {
     public class ProductTagFieldRequest
     {
-        public string Tag { get; set; }
+        public string? Tag { get; set; }
     }
 }

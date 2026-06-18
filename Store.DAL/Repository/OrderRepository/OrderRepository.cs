@@ -28,16 +28,17 @@ namespace StoreApi.DAL.Repository.OrderRepository
 
         public IEnumerable<Order> GetByUserIdOrders(string UserId)
         {
-            _connection.Open();
-            var res = _connection.Query<Order>("select * from Orders where user = @ID", new { ID = UserId});
-            _connection.Close();
-            return res;
+            return _db.Orders.Where(i => i.User == UserId);
+            //_connection.Open();
+            //var res = _connection.Query<Order>("select * from Orders where user = @ID", new { ID = UserId});
+            //_connection.Close();
+            //return res;
         }
 
-        public bool VerifyOrder(int OrderId)
+        public bool VerifyOrder(int OrderId, int refId)
         {
             _connection.Open();
-            var res = _connection.QuerySingleOrDefault("update Orders SET IsFinally = 1 , State = 0  WHERE id = @ID", new { ID = OrderId });
+            var res = _connection.QuerySingleOrDefault("update Orders SET IsFinally = 1 , State = 0 , RefId = @RefId   WHERE id = @ID", new { ID = OrderId , RefId = refId});
             _connection.Close();
             return true;
         }

@@ -10,5 +10,6 @@ namespace StoreApi.BLL.Features.OrderFeature.Command.VerifyOrder
     public class VerifyOrderCommand : IRequest<bool>
     {
         public int OrderId { get; set; }
+        public int refId { get; set; }
     }
 }

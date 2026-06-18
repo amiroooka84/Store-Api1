@@ -24,13 +24,13 @@ namespace StoreApi.Controllers.AdminSide
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        private readonly ICacheProvider _cacheProvider;
+        //private readonly ICacheProvider _cacheProvider;
 
-        public ManageProductController(IMapper mapper, IMediator mediator, IConnectionMultiplexer connection, ICacheProvider cacheProvider)
+        public ManageProductController(IMapper mapper, IMediator mediator/*, ICacheProvider cacheProvider*/)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _cacheProvider = cacheProvider;
+            //_cacheProvider = cacheProvider;
         }
 
         [HttpPost(Name = "AddProduct")]
@@ -51,7 +51,7 @@ namespace StoreApi.Controllers.AdminSide
             Product product = _mapper.Map<EditProductFieldRequest, Product>(editProductFieldRequest);
             UpdateProductCommand.Product = product;
             Product res = await _mediator.Send(UpdateProductCommand);
-            _cacheProvider.Subscribe("ProductId:"+editProductFieldRequest.id);
+            //_cacheProvider.Subscribe("ProductId:"+editProductFieldRequest.id);
             return Ok(res);
         }
 

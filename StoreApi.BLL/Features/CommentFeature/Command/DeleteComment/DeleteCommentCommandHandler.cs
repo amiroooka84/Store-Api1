@@ -20,7 +20,7 @@ namespace StoreApi.BLL.Features.CommentFeature.Command.DeleteComment
         public Task<Comment> Handle(DeleteCommentCommand request, CancellationToken cancellationToken)
         {
             var comment = _commentRepository.GetById(request.CommentId);
-            Comment res = null;
+            Comment res = new Comment();
             if (comment.UserId == request.UserId) 
             {
                 res = _commentRepository.Delete(request.CommentId);

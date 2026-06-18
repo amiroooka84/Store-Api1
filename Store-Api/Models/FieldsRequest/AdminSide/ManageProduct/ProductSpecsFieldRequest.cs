@@ -2,8 +2,7 @@
 {
     public class ProductSpecsFieldRequest
     {
-        public string Specs { get; set; }
-        public string value { get; set; }
-        public int ProductId { get; set; }
+        public string? Specs { get; set; }
+        public string? value { get; set; }
     }
 }

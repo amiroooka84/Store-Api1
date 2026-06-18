@@ -73,9 +73,9 @@ namespace StoreApi.BLL.Features.OrderFeature.Command.AddOrder
                     Code = product.Code,
                     OrderId = res1.id
                 };
-                PriceOrder += productOrder.Price;
-                DiscountOrder += productOrder.Discount;
-
+                PriceOrder += productOrder.Price * item.Number;
+                DiscountOrder += productOrder.Discount * item.Number;
+                //باید قیمت در تعداد ضرب بشه یادت باشه
 
                 _productOrderRepository.Create(productOrder);
             }

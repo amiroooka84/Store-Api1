@@ -30,13 +30,13 @@ namespace StoreApi.Controllers.UserSide
     {
         private readonly IMediator _mediator;
         private readonly UserManager<User> _userManager;
-        private readonly ICacheProvider _cacheProvider;
+        //private readonly ICacheProvider _cacheProvider;
 
-        public ProductController(IMediator mediator, UserManager<User> userManager, ICacheProvider cacheProvider)
+        public ProductController(IMediator mediator, UserManager<User> userManager/*, ICacheProvider cacheProvider*/)
         {
             _mediator = mediator;
             _userManager = userManager;
-            _cacheProvider = cacheProvider;
+            //_cacheProvider = cacheProvider;
         }
 
         [HttpGet(Name = "GetProduct")]
@@ -45,33 +45,44 @@ namespace StoreApi.Controllers.UserSide
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var result = await HttpContext.AuthenticateAsync("Bearer");
             bool isLike = false;
-            GetByIdProductViewModel res = new GetByIdProductViewModel();
-            if (token != null)
+            if (token != null && result.Principal != null )
             {
-                string phoneNumber = result.Principal.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
-                User user = await _userManager.FindByNameAsync(phoneNumber);
-                Like like = new Like()
+                try
                 {
-                    UserId = user.Id,
-                    ProductId = id,
-                };
-                Like likeRes = await _mediator.Send(new GetLikedProductQuery() { Like = like });
+                    string phoneNumber = result.Principal.Claims.ToDictionary(claim => claim.Type, claim => claim.Value).Values.First();
 
-                 isLike =  likeRes != null ? true : false;
+                    User user = await _userManager.FindByNameAsync(phoneNumber);
+                    Like like = new Like()
+                    {
+                        UserId = user.Id,
+                        ProductId = id,
+                    };
+                    Like likeRes = await _mediator.Send(new GetLikedProductQuery() { Like = like });
+
+                    isLike = likeRes != null ? true : false;
+                }
+                catch
+                {
+                    isLike = false;
+                }
             }
 
-            res.IsLiked = isLike;
+            GetByIdProductViewModel res = new GetByIdProductViewModel() { };
+            
 
-            res = await _cacheProvider.GetCacheAsync("ProductId:" + id);
-            if (res != null)
+            
+
+            //res = await _cacheProvider.GetCacheAsync("ProductId:" + id);
+            if (res.Product != null)
             {
+                res.IsLiked = isLike;
                 return Ok(res);
             }
 
             res = await _mediator.Send(new GetByIdProductQuery() { id = id });
 
-            await _cacheProvider.SetCacheAsync("ProductId:" + id , res);
-
+            //await _cacheProvider.SetCacheAsync("ProductId:" + id , res);
+            res.IsLiked = isLike;
             return Ok(res);
         }
 
@@ -101,9 +112,9 @@ namespace StoreApi.Controllers.UserSide
         }
 
         [HttpGet(Name = "GetComments")]
-        public async Task<IActionResult> GetComments(IntIdField productId)
+        public async Task<IActionResult> GetComments(int productId)
         {
-            IEnumerable<Comment> res = await _mediator.Send(new GetProductCommentsCommand() { ProductId = productId.id });
+            IEnumerable<Comment> res = await _mediator.Send(new GetProductCommentsCommand() { ProductId = productId });
             return Ok(res);
         }
     }

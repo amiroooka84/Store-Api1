@@ -11,7 +11,7 @@ namespace StoreApi.DAL.Repository.OrderRepository
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        public bool VerifyOrder(int OrderId);
+        public bool VerifyOrder(int OrderId , int refId);
         public IEnumerable<Order> GetByUserIdOrders(string UserId);
         public void ChangeOrderState(int OrderId , Order.state OrderState);
     }

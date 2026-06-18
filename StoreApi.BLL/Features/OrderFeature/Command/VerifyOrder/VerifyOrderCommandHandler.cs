@@ -21,7 +21,7 @@ namespace StoreApi.BLL.Features.OrderFeature.Command.VerifyOrder
 
         public Task<bool> Handle(VerifyOrderCommand request, CancellationToken cancellationToken)
         {
-            var res =   _orderRepository.VerifyOrder(request.OrderId);
+            var res =   _orderRepository.VerifyOrder(request.OrderId , request.refId);
             return Task.FromResult(res);
         }
     }

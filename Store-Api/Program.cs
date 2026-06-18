@@ -116,9 +116,9 @@ internal class Program
 ;
 
         //ConnectionMultiplexer.ConnectAsync("basketdb:6379");
-        builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect("redisdb:6379,abortConnect=false"));
-        builder.Services.AddHostedService<RedisSyncService>();
-        builder.Services.AddScoped<ICacheProvider , CacheProvider>();
+        //builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect("localhost:6379,abortConnect=false"));
+        //builder.Services.AddHostedService<RedisSyncService>();
+        //builder.Services.AddScoped<ICacheProvider , CacheProvider>();
 
         var app = builder.Build();
 

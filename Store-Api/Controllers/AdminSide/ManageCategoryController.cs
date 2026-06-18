@@ -62,9 +62,9 @@ namespace StoreApi.Controllers.AdminSide
         }
 
         [HttpGet(Name = "GetCategoryById")]
-        public async Task<IActionResult> GetCategoryById(IntIdField id)
+        public async Task<IActionResult> GetCategoryById(int id)
         {
-            Category res = await _mediator.Send(new GetByIdCategoryQuery() { id = id.id});
+            Category res = await _mediator.Send(new GetByIdCategoryQuery() { id = id});
             return Ok(res);
         }
     }

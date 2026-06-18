@@ -8,6 +8,7 @@ using StoreApi.BLL.Features.OrderFeature.Query.GetOrderById;
 using StoreApi.BLL.Features.OrderFeature.Query.GetOrderProducts;
 using StoreApi.BLL.Features.ProductFeature.Query.GetByIdProduct;
 using StoreApi.Entity._Order;
+using StoreApi.Models.FieldsRequest.AdminSide.ManageOrder;
 using StoreApi.Models.FieldsRequest.IDField;
 
 namespace StoreApi.Controllers.AdminSide
@@ -63,17 +64,17 @@ namespace StoreApi.Controllers.AdminSide
         }
 
         [HttpGet(Name = "GetOrderInfo")]
-        public IActionResult GetOrderInfo(IntIdField OrderId)
+        public IActionResult GetOrderInfo(int OrderId)
         {
-            Order Order = _mediator.Send(new GetOrderByIdQuery() { OrderId = OrderId.id}).Result;
-            List<ProductOrder> Products = _mediator.Send(new GetOrderProductsQuery() { OrderId = OrderId.id }).Result.ToList();
+            Order Order = _mediator.Send(new GetOrderByIdQuery() { OrderId = OrderId}).Result;
+            List<ProductOrder> Products = _mediator.Send(new GetOrderProductsQuery() { OrderId = OrderId}).Result.ToList();
             return Ok(new {Order , Products});
         }
 
         [HttpPost(Name = "ChangeOrderState")]
-        public IActionResult ChangeOrderState(int orderId , Order.state OrderState)
+        public IActionResult ChangeOrderState(ChangeOrderStateFieldRequest changeOrderStateFieldRequest)
         {
-            _mediator.Send(new ChangeOrderStateCommand() { OrderId = orderId , OrderState = OrderState});
+            _mediator.Send(new ChangeOrderStateCommand() { OrderId = changeOrderStateFieldRequest.orderId, OrderState = (Order.state)changeOrderStateFieldRequest.orderState });
             return Ok();
         }
     }

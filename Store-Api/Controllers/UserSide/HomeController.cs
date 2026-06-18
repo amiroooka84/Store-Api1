@@ -34,7 +34,7 @@ namespace StoreApi.Controllers.UserSide
         }
 
         [HttpGet(Name = "Categories")]
-        public async Task<IActionResult> Categories()
+        public async Task<IActionResult> Categories ()
         {
             IEnumerable<Category> res = await _mediator.Send(new GetAllCategoriesQuery());
             return Ok(res);

@@ -17,7 +17,6 @@ using StoreApi.BLL.Features.UserAddressFeature.Query.GetUserAddresses;
 using StoreApi.BLL.Features.UserAddressFeature.Command.AddUserAddress;
 using StoreApi.BLL.Features.UserAddressFeature.Command.DeleteUserAddress;
 using StoreApi.Models.FieldsRequest.IDField;
-using StoreApi.Entity._Image;
 using StoreApi.BLL.Features.UserAddressFeature.Command.UpdateUserAddress;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net;
@@ -78,7 +77,7 @@ namespace StoreApi.Controllers
             DateTime expireTime = DateTime.Now.AddMinutes(5);
             _memoryCache.Remove("ConfirmCode");
             _memoryCache.Set("ConfirmCode", new ConfirmCode() { PhoneNumber = phoneNumberFieldRequest.PhoneNumber, Code = Code, ExpireTime = expireTime } , TimeSpan.FromMinutes(5));
-            return Ok(new { Code });
+            return Ok(new { Code });//for test
         }
 
 

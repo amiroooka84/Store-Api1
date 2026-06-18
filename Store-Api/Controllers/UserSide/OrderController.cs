@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using ClosedXML;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StoreApi.BLL.Features.OrderFeature.Command.AddOrder;
 using StoreApi.BLL.Features.OrderFeature.Command.VerifyOrder;
 using StoreApi.BLL.Features.OrderFeature.Query.GetByUserIdOrders;
@@ -10,9 +12,11 @@ using StoreApi.BLL.Features.OrderFeature.Query.GetOrderById;
 using StoreApi.BLL.Features.OrderFeature.Query.GetOrderProducts;
 using StoreApi.Entity._Order;
 using StoreApi.Entity._User;
+using StoreApi.Models.Classes.Payment;
 using StoreApi.Models.FieldsRequest.AccountField;
 using StoreApi.Models.FieldsRequest.IDField;
 using StoreApi.Models.FieldsRequest.UserSide.Order;
+using StoreApi.Models.Services.Payment;
 
 namespace StoreApi.Controllers.UserSide
 {
@@ -53,11 +57,45 @@ namespace StoreApi.Controllers.UserSide
             return Ok(res);
         }
 
-        [HttpPost(Name = "VerifyOrder")]
-        public async Task<IActionResult> VerifyOrder(VerifyOrderFieldRequest verifyOrder)
+
+        [AllowAnonymous]
+        [HttpGet(Name = "VerifyOrder")]
+        public async Task<IActionResult> VerifyOrder(int success, long trackId, int orderId, int status)
         {
-            bool res = await _mediator.Send(new VerifyOrderCommand() { OrderId = verifyOrder.id});
-            return Ok(res);
+            var client = new HttpClient();
+            string data = JsonConvert.SerializeObject(new { merchant = "zibal", trackId = trackId });
+            var content = new StringContent(
+                       data,
+            System.Text.Encoding.UTF8, "application/json");
+
+            var verifyRes = await  client.PostAsync("https://gateway.zibal.ir/v1/verify" , content);
+            var inquiryRes = await client.PostAsync("https://gateway.zibal.ir/v1/inquiry", content);
+
+            //var request = new HttpRequestMessage(HttpMethod.Post, "https://gateway.zibal.ir/v1/inquiry");
+            //var request = new HttpRequestMessage(HttpMethod.Post, "https://gateway.zibal.ir/v1/verify");
+            //string data = JsonConvert.SerializeObject(new { merchant = "zibal", trackId = 4596035231 });
+            //request.Content = new StringContent(
+            //           data,
+            //System.Text.Encoding.UTF8, "application/json");
+            //var response = client.SendAsync(request);
+            //Console.WriteLine(response.Content.ReadAsStringAsync());
+            //var pv = await Payment.PaymentVerify(trackId);
+            //Console.Write(pv);
+            //if (pv.result == 100) 
+            //{ 
+
+
+            //}
+
+            PaymentVerify a = JsonConvert.DeserializeObject<PaymentVerify>(inquiryRes.Content.ReadAsStream().ToString()!)!;
+
+            //if (a.)
+            //{
+
+            //}
+            bool res = false; /*await _mediator.Send(new VerifyOrderCommand() { OrderId = orderId});*/
+
+            return Ok(inquiryRes.Content.ReadAsStream());
         }
 
         [HttpGet(Name = "GetOrders")]
@@ -69,11 +107,11 @@ namespace StoreApi.Controllers.UserSide
         }
 
         [HttpGet(Name = "GetOrderInfoUser")]
-        public IActionResult GetOrderInfo(IntIdField OrderId)
+        public IActionResult GetOrderInfo(int order)
         {
-            Order Order = _mediator.Send(new GetOrderByIdQuery() { OrderId = OrderId.id }).Result;
-            List<ProductOrder> Products = _mediator.Send(new GetOrderProductsQuery() { OrderId = OrderId.id }).Result.ToList();
-            return Ok();
+            Order Order = _mediator.Send(new GetOrderByIdQuery() { OrderId = order }).Result;
+            List<ProductOrder> Products = _mediator.Send(new GetOrderProductsQuery() { OrderId = order }).Result.ToList();
+            return Ok(new{ Order , Products });
         }
     }
 }
